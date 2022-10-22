@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1096356955111",
+    "project_id": "fourrshare",
+    "storage_bucket": "fourrshare.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096356955111:android:5aa49e078b8dd2214df342",
+        "android_client_info": {
+          "package_name": "com.signpe.fourrshare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096356955111-7v492b3anqeu98inj8lj4e9k8a096mev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.signpe.fourrshare",
+            "certificate_hash": "468e616e94521a3eb1c94356123ef893c5a7a61b"
+          }
+        },
+        {
+          "client_id": "1096356955111-vso4qpngrlm17crke8infbo8r1udkqn0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ-j_slSscqQbY_BD0js4mzzpT8a4Ezkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096356955111-vso4qpngrlm17crke8infbo8r1udkqn0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
