@@ -27,21 +27,44 @@ public class RegisterActivity extends AppCompatActivity {
         Button register= findViewById(R.id.register_button);
         EditText id = findViewById(R.id.input_id);
         EditText pw = findViewById(R.id.input_pw);
+        EditText check_pw = findViewById(R.id.input_check_pw);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (id.getText().toString().length() == 0 || pw.getText().toString().length() == 0 ){
-                    Toast.makeText(getApplicationContext(),"이메일 혹은 비밀번호 칸이 비어있습니다.",Toast.LENGTH_SHORT).show();
-                }
-                else {
-
-
+                if (registerValidationCheck(id,pw,check_pw))
+                {
                     createUserWithEmailAndPassword(id.getText().toString(), pw.getText().toString());
+
                 }
+
+
+
+
             }
         });
     }
+    private boolean registerValidationCheck(EditText id, EditText pw, EditText check_pw){
+        if (id.getText().toString().length() ==0 || pw.getText().toString().length() ==0 || check_pw.getText().toString().length() ==0){
+            Toast.makeText(getApplicationContext(),"비어 있는 항목이 있습니다.",Toast.LENGTH_SHORT).show();
+
+        }
+        else if(!isEmailValid(id.getText().toString())){
+            Toast.makeText(this, "이메일의 형식으로 입력하셔야 합니다.", Toast.LENGTH_SHORT).show();
+
+        }
+
+        else if (!(pw.getText().toString().equals(check_pw.getText().toString()))){
+            Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+        }
+        else if((pw.getText().toString().length() < 6)){
+            Toast.makeText(this, "비밀번호는 6글자 이상이여야 합니다.", Toast.LENGTH_SHORT).show();
+        }
+        else{ return true;}
+        return false;
+    }
+
+
     private void createUserWithEmailAndPassword(String email,String password){
         Log.d("superdroid","called!");
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -58,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(getApplicationContext(), "Authentication failed.",
+                            Toast.makeText(getApplicationContext(), "이미 존재하는 이메일 입니다.",
                                     Toast.LENGTH_SHORT).show();
                             Log.d("sperdorid", "failfail:success");
                         }
@@ -75,7 +98,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
 
     private void reload(){
 
