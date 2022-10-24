@@ -77,8 +77,8 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.d("superdroid", "createUserWithEmail:success");
                             Toast.makeText(getApplicationContext(),"회원가입 성공",Toast.LENGTH_SHORT).show();
                             Intent myintent = new Intent(getApplicationContext(),LoginActivity.class);
-                            startActivity(myintent);
                             finish();
+                            startActivity(myintent);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "이미 존재하는 이메일 입니다.",

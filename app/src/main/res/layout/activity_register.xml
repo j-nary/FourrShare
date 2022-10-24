@@ -14,11 +14,13 @@
         android:id="@+id/input_pw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textPassword"
         android:hint="비밀번호" />
     <EditText
         android:id="@+id/input_check_pw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textPassword"
         android:hint="비밀번호 확인" />
 
     <Button

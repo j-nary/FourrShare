@@ -14,6 +14,7 @@
         android:id="@+id/login_input_pw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textPassword"
         android:hint="비밀번호"/>
 
     <Button
@@ -26,6 +27,8 @@
         android:id="@+id/goto_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:textColor="#000000"
         android:text="@string/register"/>
 
 </LinearLayout>

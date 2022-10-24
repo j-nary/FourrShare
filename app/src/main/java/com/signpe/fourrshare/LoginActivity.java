@@ -79,8 +79,9 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("superdroid", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser(); // to debug
                            // Toast.makeText(LoginActivity.this, mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
                             finish();
+                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("superdroid", "signInWithEmail:failure", task.getException());
