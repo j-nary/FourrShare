@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">FourrShare</string>
-    <string name="register">Register</string>
+    <string name="register">회원가입</string>
 </resources>
