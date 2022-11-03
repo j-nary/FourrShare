@@ -20,15 +20,49 @@
         android:textSize="20dp"
         android:layout_marginLeft="15dp"
         android:textColor="@color/black" />
+
     <Button
-        android:text="+"
-        android:layout_width="wrap_content"
+        android:layout_width="52dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:padding="0dp"
+        android:layout_marginRight="20dp"
         android:onClick="onPlusButtonClick"
-        android:textSize="20dp"
+        android:padding="0dp"
+        android:text="+"
         android:textColor="@color/black"
-        android:layout_marginRight="20dp"/>
+        android:textSize="20dp" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/galleryScroll">
+
+        <!-- 수직 방향 스크롤을 위한 스크롤 뷰 -->
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scroll2"
+            android:background=""
+            android:scrollbarFadeDuration = "0"
+            android:scrollbarAlwaysDrawVerticalTrack = "true"
+            android:scrollbarSize="10dp"
+            android:verticalScrollbarPosition="right"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbarThumbVertical="@color/purple_200">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="hello it's me \nieowjㅇㄹㄴㄴㄴㄴㅎㄴㅇfndv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv" />
+<!--            <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:id="@+id/image1"/>-->
+        </ScrollView>
+
+    </HorizontalScrollView>
+
+
 
 </LinearLayout>
