@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#fdfdf6">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="70dp"
+        android:text="포르쉐"
+        android:textStyle="bold"
+        android:layout_margin="10dp"
+        android:textColor="@color/black"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="four, rank, share"
+        android:textSize="20dp"
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/black" />
+
+    <Button
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="20dp"
+        android:onClick="onPlusButtonClick"
+        android:padding="0dp"
+        android:text="+"
+        android:textColor="@color/black"
+        android:textSize="20dp" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/galleryScroll">
+
+        <!-- 수직 방향 스크롤을 위한 스크롤 뷰 -->
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scroll2"
+            android:background=""
+            android:scrollbarFadeDuration = "0"
+            android:scrollbarAlwaysDrawVerticalTrack = "true"
+            android:scrollbarSize="10dp"
+            android:verticalScrollbarPosition="right"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbarThumbVertical="@color/purple_200">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="hello it's me \nieowjㅇㄹㄴㄴㄴㄴㅎㄴㅇfndv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv" />
+<!--            <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:id="@+id/image1"/>-->
+        </ScrollView>
+
+    </HorizontalScrollView>
+
+
+
+</LinearLayout>
