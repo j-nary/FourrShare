@@ -62,11 +62,17 @@ public class ScanActivity extends AppCompatActivity {
                 Toast.makeText (this, "전달할 값이 없습니다.", Toast.LENGTH_LONG).show ();
             } else {
                 Toast.makeText (this, "Scanned: " + result.getContents (), Toast.LENGTH_LONG).show ();
-
+                checkTypeOfPicture(result.getContents());
             }
         } else {
             super.onActivityResult (requestCode, resultCode, data);
         }
         finish();
     }
+    private int checkTypeOfPicture(String result){
+        //
+
+        return 0;
+    }
+
 }
