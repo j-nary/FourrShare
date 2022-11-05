@@ -3,34 +3,72 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#9ECADB"
+
     android:orientation="vertical"  >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="200dp"
+        android:textSize="45dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:text="포르쉐"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:text="Four,Rank,Share"/>
 
     <EditText
         android:id="@+id/login_input_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="아이디"/>
+        android:layout_marginTop="30dp"
+        android:layout_width="200dp"
+        android:hint="Email"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="40dp"
+        android:inputType="textEmailAddress"
+        android:gravity="center"
+        android:background="@color/white"/>
+
+
 
     <EditText
+        android:layout_gravity="center_horizontal"
         android:id="@+id/login_input_pw"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_width="200dp"
+        android:hint="password"
         android:inputType="textPassword"
-        android:hint="비밀번호"/>
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:background="@color/white"/>
 
     <Button
         android:id="@+id/login_btn"
-        android:layout_width="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text="로그인"/>
 
+
+
     <Button
         android:id="@+id/goto_register"
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:textColor="@color/black"
-        android:text="@string/register"/>
+        android:background="@android:color/transparent"
+        android:textColorHint="@color/white"
+        android:stateListAnimator="@null"
+        android:text="@string/register"
+        android:textColor="@color/black" />
+
+
+
 
 </LinearLayout>
