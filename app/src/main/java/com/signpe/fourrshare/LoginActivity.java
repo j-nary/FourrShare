@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myintent = new Intent(getApplicationContext(),RegisterActivity.class);
+                myintent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(myintent);
             }
         });

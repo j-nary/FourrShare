@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/profile"
+        android:layout_gravity="center"
+        android:maxHeight="25dp"
+        android:maxWidth="25dp"
+        android:layout_marginTop="100dp"/>
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:inputType="textNoSuggestions"
+        android:hint="이름을 입력해주세요."
+        android:layout_gravity="center"
+        android:enabled="true"
+        android:layout_marginTop="60dp"/>
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:text="Logout"
+        android:layout_marginTop="100dp"/>
+
+</LinearLayout>
