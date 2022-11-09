@@ -21,33 +21,30 @@ public class GalleryActivity extends AppCompatActivity {
     // 네비게이션 바
     public void onClickNavigationBar(View v){
         if(v.getId() == R.id.galleryClickButton){
-            finish();
-            overridePendingTransition(0,0);
+
             startActivity(new Intent(getApplicationContext(),GalleryActivity.class));
+            finish();
             overridePendingTransition(0,0);
         }
         else if(v.getId() == R.id.scanClickButton){
-            finish();
-            overridePendingTransition(0,0);
             startActivity(new Intent(getApplicationContext(),ScanActivity.class));
+            finish();
             overridePendingTransition(0,0);
         }
         else if(v.getId() == R.id.rankClickButton){
-            finish();
-            overridePendingTransition(0,0);
+
             startActivity(new Intent(getApplicationContext(),RankActivity.class));
+            finish();
             overridePendingTransition(0,0);
         }
         else if(v.getId() == R.id.scrapClickButton){
-            finish();
-            overridePendingTransition(0,0);
             startActivity(new Intent(getApplicationContext(),ScrapActivity.class));
+            finish();
             overridePendingTransition(0,0);
         }
         else if(v.getId() == R.id.myinfoClickButton){
-            finish();
-            overridePendingTransition(0,0);
             startActivity(new Intent(getApplicationContext(),MyInfoActivity.class));
+            finish();
             overridePendingTransition(0,0);
         }
     }
