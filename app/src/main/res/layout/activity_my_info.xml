@@ -34,4 +34,63 @@
         android:text="Logout"
         android:layout_marginTop="100dp"/>
 
+    <!--하단바-->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:background="#9ECADB"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true">
+            <ImageView
+                android:id="@+id/galleryClickButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:onClick="onClickNavigationBar"
+                android:src="@drawable/gallery"
+                />
+            <ImageView
+                android:id="@+id/rankClickButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:onClick="onClickNavigationBar"
+                android:src="@drawable/rank"
+                />
+            <ImageView
+                android:id="@+id/scanClickButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:onClick="onClickNavigationBar"
+                android:src="@drawable/scan"
+                />
+            <ImageView
+                android:id="@+id/scrapClickButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:onClick="onClickNavigationBar"
+                android:src="@drawable/scrap"
+                />
+            <ImageView
+                android:id="@+id/myinfoClickButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:onClick="onClickNavigationBar"
+                android:src="@drawable/myinfo"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
 </LinearLayout>
