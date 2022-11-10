@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
@@ -75,7 +76,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/gallery"
-        />
+            app:tint="#656565"/>
         <ImageView
             android:id="@+id/rankClickButton"
             android:layout_width="0dp"
@@ -83,8 +84,8 @@
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
-            android:src="@drawable/rank"
-            />
+            android:src="@drawable/rankclick"
+            app:tint="#000"/>
         <ImageView
             android:id="@+id/scanClickButton"
             android:layout_width="0dp"
@@ -93,7 +94,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/scan"
-            />
+            app:tint="#656565"/>
         <ImageView
             android:id="@+id/scrapClickButton"
             android:layout_width="0dp"
@@ -102,7 +103,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/scrap"
-            />
+            app:tint="#656565"/>
         <ImageView
             android:id="@+id/myinfoClickButton"
             android:layout_width="0dp"
@@ -111,7 +112,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/myinfo"
-            />
+            app:tint="#656565"/>
     </LinearLayout>
 
 </LinearLayout>

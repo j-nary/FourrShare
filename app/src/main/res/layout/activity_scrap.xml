@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -66,7 +67,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/gallery"
-            />
+            app:tint="#656565" />
         <ImageView
             android:id="@+id/rankClickButton"
             android:layout_width="0dp"
@@ -75,7 +76,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/rank"
-            />
+            app:tint="#656565"/>
         <ImageView
             android:id="@+id/scanClickButton"
             android:layout_width="0dp"
@@ -84,7 +85,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/scan"
-            />
+            app:tint="#656565"/>
         <ImageView
             android:id="@+id/scrapClickButton"
             android:layout_width="0dp"
@@ -92,8 +93,8 @@
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
-            android:src="@drawable/scrap"
-            />
+            android:src="@drawable/scrapclick"
+            app:tint="#000"/>
         <ImageView
             android:id="@+id/myinfoClickButton"
             android:layout_width="0dp"
@@ -102,7 +103,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/myinfo"
-            />
+            app:tint="#656565"/>
     </LinearLayout>
 
 </LinearLayout>

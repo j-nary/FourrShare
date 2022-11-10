@@ -29,7 +29,6 @@ public class MyInfoActivity extends AppCompatActivity {
     // 네비게이션 바
     public void onClickNavigationBar(View v){
         if(v.getId() == R.id.galleryClickButton){
-
             startActivity(new Intent(getApplicationContext(),GalleryActivity.class));
             finish();
             overridePendingTransition(0,0);
