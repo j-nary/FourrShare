@@ -39,7 +39,7 @@ public class ScanActivity extends AppCompatActivity {
         if(permission == PackageManager.PERMISSION_DENIED){
             // 권한 없어서 요청
         }else{
-            // 권한 있음
+            // 권한
             new IntentIntegrator(this).setOrientationLocked(false).setPrompt("QR스캔").initiateScan ();
         }
 
