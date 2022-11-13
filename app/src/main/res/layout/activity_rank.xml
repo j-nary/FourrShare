@@ -35,32 +35,21 @@
             android:text="좋아요 순" />
     </LinearLayout>
 
-    <ScrollView
-        android:layout_weight="1"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_rank"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rank_recycler_view"
+            android:scrollbars="vertical"
+            android:scrollbarFadeDuration="0"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:background="#B4FFEE"
-                android:gravity="center"
-                android:text="Test1"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:background="#DFB2FF"
-                android:gravity="center"
-                android:text="Test2"/>
-        </LinearLayout>
-    </ScrollView>
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </RelativeLayout>
 
     <!--하단바-->
     <LinearLayout

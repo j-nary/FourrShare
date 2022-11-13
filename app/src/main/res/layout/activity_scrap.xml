@@ -21,37 +21,22 @@
         android:textSize="20dp"
         android:layout_marginLeft="15dp"
         android:textColor="@color/black" />
-    <HorizontalScrollView
-        android:layout_weight="1"
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_scrap"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="10dp"
-        android:id="@+id/galleryScroll">
+        android:layout_weight="1">
 
-        <!-- 수직 방향 스크롤을 위한 스크롤 뷰 -->
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/scroll2"
-            android:background="@null"
-            android:scrollbarFadeDuration = "0"
-            android:scrollbarAlwaysDrawVerticalTrack = "true"
-            android:scrollbarSize="10dp"
-            android:verticalScrollbarPosition="right"
-            android:scrollbarStyle="outsideInset"
-            android:scrollbarThumbVertical="@color/purple_200">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="hello it's me \nieowjㅇㄹㄴㄴㄴㄴㅎㄴㅇfndv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv\nweijofndsvowejfndjsv" />
-            <!--            <ImageView-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:id="@+id/image1"/>-->
-        </ScrollView>
-
-    </HorizontalScrollView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/scrap_recycler_view"
+            android:scrollbars="vertical"
+            android:scrollbarFadeDuration="0"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </RelativeLayout>
 
     <!--하단바-->
     <LinearLayout
