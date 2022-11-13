@@ -18,10 +18,10 @@ import java.util.ArrayList;
 
 public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<ScrapItem> items;
+    private ArrayList<RankItem> items;
     private int lastPosition = -1;
 
-    public RankAdapter(ArrayList<ScrapItem> items, Context context) {
+    public RankAdapter(ArrayList<RankItem> items, Context context) {
         this.items = items;
         this.context = context;
     }
