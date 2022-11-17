@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,13 +25,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.signpe.fourrshare.model.ContentDTO;
-
-import org.checkerframework.checker.units.qual.C;
+import com.signpe.fourrshare.model.ImageDTO;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     ImageView imageView;
@@ -93,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         String img_uri = uri.toString();
-                        ContentDTO dto = new ContentDTO();
+                        ImageDTO dto = new ImageDTO();
                         dto.setImageUri(img_uri);
                         dto.setUid(currentUser.getUid());
                         dto.setUserId(currentUser.getEmail());

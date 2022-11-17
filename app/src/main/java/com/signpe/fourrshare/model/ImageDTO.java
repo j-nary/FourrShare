@@ -3,7 +3,7 @@ package com.signpe.fourrshare.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ContentDTO {
+public class ImageDTO {
     private String imageUri;
     private String uid;
     private String userId;
