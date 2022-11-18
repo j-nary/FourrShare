@@ -42,7 +42,7 @@ public class GalleryActivity extends AppCompatActivity {
     private RecyclerView.Adapter Adapter;
     private RecyclerView.LayoutManager LayoutManager;
     ArrayList<Uri> uriList = new ArrayList<>();     // 이미지의 uri를 담을 ArrayList 객체
-
+    ArrayList<ImageDTO> imageDTOS = new ArrayList<>();
     RecyclerView recyclerView;  // 이미지를 보여줄 리사이클러뷰
     MultiImageAdapter adapter;  // 리사이클러뷰에 적용시킬 어댑터
 
@@ -67,7 +67,10 @@ public class GalleryActivity extends AppCompatActivity {
         });
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-
+        LayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        adapter = new MultiImageAdapter(getApplicationContext(),imageDTOS);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(LayoutManager);
 
     }
 
@@ -98,26 +101,26 @@ public class GalleryActivity extends AppCompatActivity {
                             Log.e(TAG, "File select error", e);
                         }
                     }
-                    contentupLoad();
-                    LayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
-                    adapter = new MultiImageAdapter(uriList, getApplicationContext());
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(LayoutManager);   // 리사이클러뷰 수평 스크롤 적용
+                    contentUpLoad();
+                      // 리사이클러뷰 수평 스크롤 적용
                 }
             }
 
     }
 
 
-    private void contentupLoad(){
+    private void contentUpLoad(){ // 진짜 스파게티 코드로 만든 부분이니까 건들지 말아주세요
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         int count=0;
+        int inner_cnt=0;
         for(Uri uri : uriList) {
             String fileName = "IMAGE_" + sdf.format(timestamp) + count + "_.png";
             count++;
+            inner_cnt++;
             StorageReference ImageRef = storageRef.child("images").child(currentUser.getUid()).child(fileName);
             UploadTask uploadTask = ImageRef.putFile(uri);
+            int finalInner_cnt = inner_cnt;
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -134,7 +137,11 @@ public class GalleryActivity extends AppCompatActivity {
                             db.collection("images").document().set(dto).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
+                                    if (uriList.size() == finalInner_cnt){
+                                        startActivity(new Intent(getApplicationContext(),GalleryActivity.class));
+                                        finish();
+                                        overridePendingTransition(0,0);
+                                    }
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -148,6 +155,8 @@ public class GalleryActivity extends AppCompatActivity {
                 }
             });
         }
+        Toast.makeText(this, "hello,there?", Toast.LENGTH_SHORT).show();
+
     }
     // 네비게이션 바
     public void onClickNavigationBar(View v){

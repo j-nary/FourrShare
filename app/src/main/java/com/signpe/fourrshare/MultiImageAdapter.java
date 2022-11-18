@@ -10,17 +10,52 @@ import android.widget.ImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.signpe.fourrshare.model.ImageDTO;
 
 import java.util.ArrayList;
 
 public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder>{
+    private FirebaseFirestore firestore;
     private ArrayList<Uri> mData = null ;
     private Context mContext = null ;
 
+    ArrayList<ImageDTO> imageDTOs;
+    public ArrayList<String> imageUidList = new ArrayList<>();
+
+
     // 생성자에서 데이터 리스트 객체, Context를 전달받음.
-    MultiImageAdapter(ArrayList<Uri> list, Context context) {
-        mData = list ;
+    MultiImageAdapter(Context context, ArrayList<ImageDTO> imageDTOS) {
+//        mData = list ;
         mContext = context;
+        this.imageDTOs=imageDTOS;
+        firestore = FirebaseFirestore.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        firestore.collection("images").whereEqualTo("uid",uid).orderBy("timeStamp").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots==null)
+                            return;
+                        try{
+                        for(DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                            ImageDTO item = snapshot.toObject(ImageDTO.class);
+                            imageDTOS.add(item);
+                            imageUidList.add(snapshot.getId());
+                        }
+                        }
+                        catch (Exception e){
+
+                        }
+                        notifyDataSetChanged();
+                    }
+                });
+
     }
 
     // 아이템 뷰를 저장하는 뷰홀더 클래스.
@@ -52,17 +87,18 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     // onBindViewHolder() - position에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시.
     @Override
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
-        Uri image_uri = mData.get(position) ;
-
-        Glide.with(mContext)
-                .load(image_uri)
-                .into(holder.image);
+//        Uri image_uri = mData.get(position) ;
+        Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.image);
+//        Glide.with(mContext)
+//                .load(image_uri)
+//                .into(holder.image);
     }
 
     // getItemCount() - 전체 데이터 갯수 리턴.
     @Override
     public int getItemCount() {
-        return mData.size() ;
+//        return mData.size() ;
+        return imageDTOs.size();
     }
 
 }
