@@ -1,105 +1,100 @@
 package com.signpe.fourrshare;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.content.ClipData;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class GalleryActivity extends AppCompatActivity {
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private static final String TAG = "MultiImageActivity";
+    private RecyclerView.Adapter Adapter;
+    private RecyclerView.LayoutManager LayoutManager;
+    ArrayList<Uri> uriList = new ArrayList<>();     // 이미지의 uri를 담을 ArrayList 객체
+
+    RecyclerView recyclerView;  // 이미지를 보여줄 리사이클러뷰
+    MultiImageAdapter adapter;  // 리사이클러뷰에 적용시킬 어댑터
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        //private void getImageFromAlbum() {
-
-        //}
-
-        Button plus_btn = findViewById(R.id.plus_btn);
-        plus_btn.setOnClickListener(new View.OnClickListener() {
+        // 앨범으로 이동하는 버튼
+        Button btn_getImage = findViewById(R.id.getImage);
+        btn_getImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //getImageFromAlbum();
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, 2222);
             }
         });
+        recyclerView = findViewById(R.id.recyclerView);
 
-
-        mRecyclerView = findViewById(R.id.my_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-
-        ArrayList<GalleryItem> items = new ArrayList<>();
-
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new GalleryItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-
-
-        mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mAdapter = new GalleryAdapter(items,
-                getApplicationContext());
-        mRecyclerView.setAdapter(mAdapter);
     }
 
-//    public void onPlusButtonClick(View v) {
-//
-//    }
+    // 앨범에서 액티비티로 돌아온 후 실행되는 메서드
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(data == null){   // 어떤 이미지도 선택하지 않은 경우
+            Toast.makeText(getApplicationContext(), "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show();
+        }
+        else{   // 이미지를 하나라도 선택한 경우
+            if(data.getClipData() == null){     // 이미지를 하나만 선택한 경우
+                Log.e("single choice: ", String.valueOf(data.getData()));
+                Uri imageUri = data.getData();
+                uriList.add(imageUri);
+
+                LayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+                adapter = new MultiImageAdapter(uriList, getApplicationContext());
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(LayoutManager);
+            }
+            else{      // 이미지를 여러장 선택한 경우
+                ClipData clipData = data.getClipData();
+                Log.e("clipData", String.valueOf(clipData.getItemCount()));
+
+                if(clipData.getItemCount() > 10){   // 선택한 이미지가 11장 이상인 경우
+                    Toast.makeText(getApplicationContext(), "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG).show();
+                }
+                else{   // 선택한 이미지가 1장 이상 10장 이하인 경우
+                    Log.e(TAG, "multiple choice");
+
+                    for (int i = 0; i < clipData.getItemCount(); i++){
+                        Uri imageUri = clipData.getItemAt(i).getUri();  // 선택한 이미지들의 uri를 가져온다.
+                        try {
+                            uriList.add(imageUri);  //uri를 list에 담는다.
+
+                        } catch (Exception e) {
+                            Log.e(TAG, "File select error", e);
+                        }
+                    }
+
+                    LayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+                    adapter = new MultiImageAdapter(uriList, getApplicationContext());
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(LayoutManager);   // 리사이클러뷰 수평 스크롤 적용
+                }
+            }
+        }
+    }
 
     // 네비게이션 바
     public void onClickNavigationBar(View v){
