@@ -45,6 +45,8 @@ public class GalleryActivity extends AppCompatActivity {
             }
         });
         recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+
 
     }
 
