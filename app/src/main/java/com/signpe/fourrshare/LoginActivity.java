@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser(); // to debug
                            // Toast.makeText(LoginActivity.this, mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
                             finish();
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                            startActivity(new Intent(getApplicationContext(),GalleryActivity.class));
 
                         } else {
                             // If sign in fails, display a message to the user.

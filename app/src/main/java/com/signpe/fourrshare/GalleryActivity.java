@@ -1,5 +1,6 @@
 package com.signpe.fourrshare;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,9 +16,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.signpe.fourrshare.model.ImageDTO;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class GalleryActivity extends AppCompatActivity {
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReference();
+
     private static final String TAG = "MultiImageActivity";
     private RecyclerView.Adapter Adapter;
     private RecyclerView.LayoutManager LayoutManager;
@@ -31,7 +51,8 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
-
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
         // 앨범으로 이동하는 버튼
         Button btn_getImage = findViewById(R.id.getImage);
         btn_getImage.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +98,7 @@ public class GalleryActivity extends AppCompatActivity {
                             Log.e(TAG, "File select error", e);
                         }
                     }
-
+                    contentupLoad();
                     LayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
                     adapter = new MultiImageAdapter(uriList, getApplicationContext());
                     recyclerView.setAdapter(adapter);
@@ -87,6 +108,47 @@ public class GalleryActivity extends AppCompatActivity {
 
     }
 
+
+    private void contentupLoad(){
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        int count=0;
+        for(Uri uri : uriList) {
+            String fileName = "IMAGE_" + sdf.format(timestamp) + count + "_.png";
+            count++;
+            StorageReference ImageRef = storageRef.child("images").child(currentUser.getUid()).child(fileName);
+            UploadTask uploadTask = ImageRef.putFile(uri);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String img_uri = uri.toString();
+                            ImageDTO dto = new ImageDTO();
+                            dto.setImageUri(img_uri);
+                            dto.setUid(currentUser.getUid());
+                            dto.setUserId(currentUser.getEmail());
+                            dto.setTimeStamp(sdf.format(timestamp));
+
+                            db.collection("images").document().set(dto).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(), "업로드 실패", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+//                Toast.makeText(MainActivity.this, "succes!!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
     // 네비게이션 바
     public void onClickNavigationBar(View v){
         if(v.getId() == R.id.galleryClickButton){
