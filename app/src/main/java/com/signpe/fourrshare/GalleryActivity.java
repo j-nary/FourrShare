@@ -59,17 +59,6 @@ public class GalleryActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show();
         }
         else{   // 이미지를 하나라도 선택한 경우
-            if(data.getClipData() == null){     // 이미지를 하나만 선택한 경우
-                Log.e("single choice: ", String.valueOf(data.getData()));
-                Uri imageUri = data.getData();
-                uriList.add(imageUri);
-
-                LayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
-                adapter = new MultiImageAdapter(uriList, getApplicationContext());
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(LayoutManager);
-            }
-            else{      // 이미지를 여러장 선택한 경우
                 ClipData clipData = data.getClipData();
                 Log.e("clipData", String.valueOf(clipData.getItemCount()));
 
@@ -95,7 +84,7 @@ public class GalleryActivity extends AppCompatActivity {
                     recyclerView.setLayoutManager(LayoutManager);   // 리사이클러뷰 수평 스크롤 적용
                 }
             }
-        }
+
     }
 
     // 네비게이션 바
