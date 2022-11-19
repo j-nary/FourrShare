@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +26,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     private FirebaseFirestore firestore;
     private ArrayList<Uri> mData = null ;
     private Context mContext = null ;
+    private int lastPosition = -1;
 
     ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
@@ -89,6 +92,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
 //        Uri image_uri = mData.get(position) ;
         Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.image);
+        setAnimation(holder.image, position);
 //        Glide.with(mContext)
 //                .load(image_uri)
 //                .into(holder.image);
@@ -99,6 +103,14 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     public int getItemCount() {
 //        return mData.size() ;
         return imageDTOs.size();
+    }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left);
+            viewToAnimate.setAnimation(animation);
+            lastPosition = position;
+        }
     }
 
 }
