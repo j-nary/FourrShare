@@ -13,78 +13,44 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.signpe.fourrshare.model.ImageDTO;
+
 import java.util.ArrayList;
 
 public class RankActivity extends AppCompatActivity {
     public RecyclerView rankRecyclerView;
     private RecyclerView.Adapter rankAdapter;
     private RecyclerView.LayoutManager rankLayoutManager;
+
+    //FireBase 관련 선언. 건들면 어플 죽어요 !
+    ArrayList<ImageDTO> imageDTOS = new ArrayList<>();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReference();
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rank);
-
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
         rankRecyclerView = findViewById(R.id.rank_recycler_view);
         rankRecyclerView.setHasFixedSize(true);
 
         ArrayList<RankItem> items = new ArrayList<>();
 
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_dark_normal, "M4"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark, "Micky Mouse1"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_dark_normal_background, "M2"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_text_light_normal_background, "M3"));
-        items.add(new RankItem(R.drawable.common_google_signin_btn_icon_light, "M4"));
-
-
         rankLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rankRecyclerView.setLayoutManager(rankLayoutManager);
 
-        rankAdapter = new RankAdapter(items,
-                getApplicationContext());
+        rankAdapter = new RankAdapter(getApplicationContext(),imageDTOS);
         rankRecyclerView.setAdapter(rankAdapter);
     }
 

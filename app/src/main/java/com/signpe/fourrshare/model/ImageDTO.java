@@ -8,6 +8,7 @@ public class ImageDTO {
     private String uid;
     private String userId;
     private String timeStamp;
+    private boolean isUpload;
     private int likeCount;
     private Map<String,Boolean> likedPeople = new HashMap<>();
 
@@ -23,9 +24,9 @@ public class ImageDTO {
         return userId;
     }
 
-    public String getTimeStamp(){
-        return timeStamp;
-    }
+    public boolean getIsUpload() { return isUpload; }
+
+    public String getTimeStamp(){ return timeStamp; }
 
     public int getLikeCount(){
         return likeCount;
@@ -34,6 +35,7 @@ public class ImageDTO {
     public Map<String,Boolean> getLikedPeople(){
         return likedPeople;
     }
+
 
     public void setImageUri(String imageUri){
         this.imageUri = imageUri;
@@ -50,6 +52,8 @@ public class ImageDTO {
     public void setTimeStamp(String timeStamp){
         this.timeStamp=timeStamp;
     }
+
+    public void setIsUpload(boolean isUpload) { this.isUpload = isUpload; }
 
     public void setLikeCount(int likeCount){
         this.likeCount=likeCount;

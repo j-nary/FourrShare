@@ -14,6 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.signpe.fourrshare.model.ImageDTO;
+
 import java.util.ArrayList;
 
 public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
@@ -21,9 +29,36 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     private ArrayList<RankItem> items;
     private int lastPosition = -1;
 
-    public RankAdapter(ArrayList<RankItem> items, Context context) {
+    private FirebaseFirestore firestore;
+    ArrayList<ImageDTO> imageDTOs;
+    public ArrayList<String> imageUidList = new ArrayList<>();
+
+    public RankAdapter(Context context,ArrayList<ImageDTO> imageDTOS) {
         this.items = items;
         this.context = context;
+
+        this.imageDTOs=imageDTOS;
+        firestore = FirebaseFirestore.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        firestore.collection("images").whereEqualTo("isUpload",true).orderBy("timeStamp").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots==null)
+                            return;
+                        try{
+                            for(DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                                ImageDTO item = snapshot.toObject(ImageDTO.class);
+                                imageDTOS.add(item);
+                                imageUidList.add(snapshot.getId());
+                            }
+                        }
+                        catch (Exception e){
+
+                        }
+                        notifyDataSetChanged();
+                    }
+                });
     }
 
     //뷰 바인딩 부분을 한번만 하도록, ViewHolder 패턴 의무화
@@ -52,8 +87,9 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     //RecyclerView의 getView 부분을 담당
     @Override
     public void onBindViewHolder(@NonNull RankAdapter.ViewHolder holder, int position) {
-        holder.imageView.setImageResource(items.get(position).getImage());
-        holder.textView.setText(items.get(position).getImageTitle());
+        Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
+        // 아래 코드 뭔지 모르는데 터지길래 버림
+        holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
 
         setAnimation(holder.imageView, position);
     }
@@ -61,7 +97,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     //Item 개수 반환
     @Override
     public int getItemCount() {
-        return items.size();
+        return imageDTOs.size();
     }
 
     //View 나올 때 Animation 주기

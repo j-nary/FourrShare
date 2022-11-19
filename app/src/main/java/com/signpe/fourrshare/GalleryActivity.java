@@ -133,6 +133,8 @@ public class GalleryActivity extends AppCompatActivity {
                             dto.setUid(currentUser.getUid());
                             dto.setUserId(currentUser.getEmail());
                             dto.setTimeStamp(sdf.format(timestamp));
+                            dto.setLikeCount(0);
+                            dto.setIsUpload(false);
 
                             db.collection("images").document().set(dto).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -155,8 +157,6 @@ public class GalleryActivity extends AppCompatActivity {
                 }
             });
         }
-        Toast.makeText(this, "hello,there?", Toast.LENGTH_SHORT).show();
-
     }
     // 네비게이션 바
     public void onClickNavigationBar(View v){
