@@ -1,6 +1,8 @@
 package com.signpe.fourrshare;
 
 import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,27 +22,29 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Query.Direction;
 import com.signpe.fourrshare.model.ImageDTO;
 
 import java.util.ArrayList;
 
 public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<RankItem> items;
     private int lastPosition = -1;
 
     private FirebaseFirestore firestore;
     ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
-    public RankAdapter(Context context,ArrayList<ImageDTO> imageDTOS) {
-        this.items = items;
+    public RankAdapter(Context context,ArrayList<ImageDTO> imageDTOS,String order) {
+
         this.context = context;
 
         this.imageDTOs=imageDTOS;
         firestore = FirebaseFirestore.getInstance();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        firestore.collection("images").whereEqualTo("isUpload",true).orderBy("timeStamp").get()
+
+
+        firestore.collection("images").whereEqualTo("isUpload",true).orderBy(order,Direction.DESCENDING).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -74,28 +78,26 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
         }
     }
 
-    //새로운 뷰 생성
+    //새로운 뷰 생성 2
     @NonNull
     @Override
     public RankAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cardview, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cardview, parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
-
         return viewHolder;
     }
 
-    //RecyclerView의 getView 부분을 담당
+    //RecyclerView의 getView 부분을 담당 3
     @Override
     public void onBindViewHolder(@NonNull RankAdapter.ViewHolder holder, int position) {
         Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
         // 아래 코드 뭔지 모르는데 터지길래 버림
         holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
-
         setAnimation(holder.imageView, position);
     }
 
     //Item 개수 반환
-    @Override
+    @Override //1
     public int getItemCount() {
         return imageDTOs.size();
     }
@@ -108,4 +110,5 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
             lastPosition = position;
         }
     }
+
 }

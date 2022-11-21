@@ -32,7 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="70dp"
-            android:text="좋아요 순" />
+            android:text="좋아요 순"
+            android:onClick="onClickLikeOrder"/>
     </LinearLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -40,15 +41,16 @@
         android:id="@+id/activity_rank"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        tools:context=".RankActivity">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rank_recycler_view"
-            android:scrollbars="vertical"
-            android:scrollbarFadeDuration="0"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rank_recycler_view"
+                android:scrollbars="vertical"
+                android:scrollbarFadeDuration="0"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
     </RelativeLayout>
 
     <!--하단바-->

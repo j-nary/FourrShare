@@ -3,6 +3,7 @@ package com.signpe.fourrshare;
 public class RankItem {
     private int image;
     private String imageTitle;
+    private int imageLike;
 
     public RankItem(int image, String imageTitle) {
         this.image = image;
@@ -16,4 +17,5 @@ public class RankItem {
     public String getImageTitle() {
         return imageTitle;
     }
+
 }
