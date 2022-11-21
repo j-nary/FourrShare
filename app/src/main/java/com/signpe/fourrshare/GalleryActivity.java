@@ -115,7 +115,7 @@ public class GalleryActivity extends AppCompatActivity {
         int count=0;
         int inner_cnt=0;
         for(Uri uri : uriList) {
-            String fileName = "IMAGE_" + sdf.format(timestamp) + count + "_.png";
+            String fileName = "user_" + sdf.format(timestamp) + count + "_.png";
             count++;
             inner_cnt++;
             StorageReference ImageRef = storageRef.child("images").child(currentUser.getUid()).child(fileName);

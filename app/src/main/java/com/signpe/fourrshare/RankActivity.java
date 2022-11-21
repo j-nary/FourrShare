@@ -49,6 +49,15 @@ public class RankActivity extends AppCompatActivity{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rank);
+        sharedpreferences = getSharedPreferences("checkstate", Context.MODE_PRIVATE);
+        editor = sharedpreferences.edit();
+        CheckBox checkLikeOrder = findViewById(R.id.like_order);
+        if (sharedpreferences.getBoolean("state", false) == true) {
+            checkLikeOrder.setChecked(true);
+        } else {
+            checkLikeOrder.setChecked(false);
+        }
+
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -59,46 +68,38 @@ public class RankActivity extends AppCompatActivity{
         rankLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rankRecyclerView.setLayoutManager(rankLayoutManager);
 
-        rankAdapter = new RankAdapter(getApplicationContext(),imageDTOS,"timeStamp");
+        rankAdapter = new RankAdapter(getApplicationContext(), imageDTOS, sharedpreferences.getBoolean("state",false));
         rankRecyclerView.setAdapter(rankAdapter);
 
-        CheckBox checkLikeOrder = findViewById(R.id.like_order);
 
-        sharedpreferences = getSharedPreferences("checkstate", Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
-        if(sharedpreferences.getBoolean("state",false) == true) {
-            checkLikeOrder.setChecked(true);
-        }
-        else {
-            checkLikeOrder.setChecked(false);
-        }
+
     }
 
     // 좋아요 순 정렬
     public void onClickLikeOrder(View v){
         CheckBox checkLikeOrder = findViewById(R.id.like_order);
         if (checkLikeOrder.isChecked()){ // 체크하면 좋아요 순으로
+            editor.putBoolean("state",true);
+            editor.apply();
             finish();
             overridePendingTransition(0,0);
             Intent intent = getIntent();
             startActivity(intent);
             overridePendingTransition(0,0);
-            editor.putBoolean("state",true);
-            editor.apply();
-            rankAdapter = new RankAdapter(getApplicationContext(),imageDTOS,"likeCount");
-            rankRecyclerView.setAdapter(rankAdapter);
+
+
 
         }
         else{
+            editor.putBoolean("state",false);
+            editor.apply();
             finish();
             overridePendingTransition(0,0);
             Intent intent = getIntent();
             startActivity(intent);
             overridePendingTransition(0,0);
-            editor.putBoolean("state",false);
-            editor.apply();
-            rankAdapter = new RankAdapter(getApplicationContext(),imageDTOS,"timeStamp");
-            rankRecyclerView.setAdapter(rankAdapter);
+
+
         }
     }
 

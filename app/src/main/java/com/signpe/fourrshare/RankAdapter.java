@@ -30,21 +30,29 @@ import java.util.ArrayList;
 public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     private Context context;
     private int lastPosition = -1;
-
+    private boolean order;
+    private String state;
     private FirebaseFirestore firestore;
     ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
-    public RankAdapter(Context context,ArrayList<ImageDTO> imageDTOS,String order) {
+    public RankAdapter(Context context,ArrayList<ImageDTO> imageDTOS,boolean order) {
 
         this.context = context;
-
         this.imageDTOs=imageDTOS;
+        this.order=order;
+
+        if (order){
+            state="likeCount";
+        }
+        else{
+            state="timeStamp";
+        }
         firestore = FirebaseFirestore.getInstance();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-        firestore.collection("images").whereEqualTo("isUpload",true).orderBy(order,Direction.DESCENDING).get()
+        firestore.collection("images").whereEqualTo("isUpload",true).orderBy(state,Direction.DESCENDING).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
