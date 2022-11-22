@@ -137,7 +137,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                                     if (value!=null){
                                         holder.likeButton.setImageResource(R.drawable.nonclickheart);
-                                        holder.textView.setText(imageDTO.getLikeCount());
+                                        holder.textView.setText(String.valueOf(imageDTO.getLikeCount()));
                                         return ;
                                     }
 
@@ -153,7 +153,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                                     if (value!=null){
                                         holder.likeButton.setImageResource(R.drawable.clickheart);
-                                        holder.textView.setText(imageDTO.getLikeCount());
+                                        holder.textView.setText(String.valueOf(imageDTO.getLikeCount()));
                                         return ;
                                     }
                                     notifyDataSetChanged();
