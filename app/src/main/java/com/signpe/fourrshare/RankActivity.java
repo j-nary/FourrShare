@@ -64,7 +64,6 @@ public class RankActivity extends AppCompatActivity{
         rankRecyclerView = findViewById(R.id.rank_recycler_view);
         rankRecyclerView.setHasFixedSize(true);
 
-//        ArrayList<RankItem> items = new ArrayList<>();
         rankLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rankRecyclerView.setLayoutManager(rankLayoutManager);
 
@@ -72,8 +71,12 @@ public class RankActivity extends AppCompatActivity{
         rankRecyclerView.setAdapter(rankAdapter);
 
 
-
     }
+
+    // 좋아요 기능
+//    public void onClickLike(View v){
+//
+//    }
 
     // 좋아요 순 정렬
     public void onClickLikeOrder(View v){
@@ -86,8 +89,6 @@ public class RankActivity extends AppCompatActivity{
             Intent intent = getIntent();
             startActivity(intent);
             overridePendingTransition(0,0);
-
-
 
         }
         else{

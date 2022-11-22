@@ -1,5 +1,6 @@
 package com.signpe.fourrshare;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -12,20 +13,28 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Query.Direction;
+import com.google.firebase.firestore.Transaction;
 import com.signpe.fourrshare.model.ImageDTO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     private Context context;
@@ -76,12 +85,13 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     //뷰 바인딩 부분을 한번만 하도록, ViewHolder 패턴 의무화
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        ImageView likeButton;
         TextView textView;
 
         public ViewHolder(View view) {
             super(view);
-
             imageView = (ImageView) view.findViewById(R.id.image_view);
+            likeButton = (ImageView) view.findViewById(R.id.like_button);
             textView = (TextView) view.findViewById(R.id.text_view);
         }
     }
@@ -97,10 +107,67 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
 
     //RecyclerView의 getView 부분을 담당 3
     @Override
-    public void onBindViewHolder(@NonNull RankAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RankAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
-        // 아래 코드 뭔지 모르는데 터지길래 버림
+        if(imageDTOs.get(position).getLikedPeople().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+            holder.likeButton.setImageResource(R.drawable.clickheart);
+        }
+        else {
+            holder.likeButton.setImageResource(R.drawable.nonclickheart);
+        }
         holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
+        holder.likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                Map<String,Boolean> like = new HashMap<>();
+                like.put(uid,true);
+                DocumentReference tsdoc = firestore.collection("images").document(imageUidList.get(position));
+                firestore.runTransaction(new Transaction.Function<Void>() {
+                    @Nullable
+                    @Override
+                    public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                        ImageDTO imageDTO = transaction.get(tsdoc).toObject(ImageDTO.class);
+                        if(imageDTO.getLikedPeople().containsKey(uid)){
+                            imageDTO.setLikeCount(imageDTO.getLikeCount() - 1);
+                            imageDTO.getLikedPeople().remove(uid);
+
+                            firestore.collection("image").whereEqualTo("likedPeople",like).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                    if (value!=null){
+                                        holder.likeButton.setImageResource(R.drawable.nonclickheart);
+                                        holder.textView.setText(imageDTO.getLikeCount());
+                                        return ;
+                                    }
+
+                                    notifyDataSetChanged();
+                                }
+                            });
+                        }
+                        else{
+                            imageDTO.setLikeCount(imageDTO.getLikeCount()+1);
+                            imageDTO.getLikedPeople().put(uid,true);
+                            firestore.collection("images").whereEqualTo("likedPeople",like).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                    if (value!=null){
+                                        holder.likeButton.setImageResource(R.drawable.clickheart);
+                                        holder.textView.setText(imageDTO.getLikeCount());
+                                        return ;
+                                    }
+                                    notifyDataSetChanged();
+                                }
+                            });
+                        }
+
+                        transaction.set(tsdoc,imageDTO);
+                        return null;
+                    }
+                });
+
+            }
+        });
         setAnimation(holder.imageView, position);
     }
 
