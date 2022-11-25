@@ -76,12 +76,14 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
         ImageView imageView;
         TextView textView;
         TextView usr_nickname;
+        ImageView likeButton;
 
         public ViewHolder(View view) {
             super(view);
             imageView = (ImageView) view.findViewById(R.id.image_view);
             textView = (TextView) view.findViewById(R.id.text_view);
             usr_nickname = view.findViewById(R.id.usr_nickname);
+            likeButton = view.findViewById(R.id.like_button);
         }
     }
 
@@ -99,8 +101,61 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ScrapAdapter.ViewHolder holder,@SuppressLint("RecyclerView") int position) {
         Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
+        holder.likeButton.setImageResource(R.drawable.clickheart);
         holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
         holder.usr_nickname.setText(String.valueOf(imageDTOs.get(position).getUserNickname()));
+        holder.likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                Map<String,Boolean> like = new HashMap<>();
+                like.put(uid,true);
+                DocumentReference tsdoc = firestore.collection("images").document(imageUidList.get(position));
+                firestore.runTransaction(new Transaction.Function<Void>() {
+                    @Nullable
+                    @Override
+                    public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                        ImageDTO imageDTO = transaction.get(tsdoc).toObject(ImageDTO.class);
+                        if(imageDTO.getLikedPeople().containsKey(uid)){
+                            imageDTO.setLikeCount(imageDTO.getLikeCount() - 1);
+                            imageDTO.getLikedPeople().remove(uid);
+
+                            firestore.collection("image").whereEqualTo("likedPeople",like).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                    if (value!=null){
+                                        holder.likeButton.setImageResource(R.drawable.nonclickheart);
+                                        holder.textView.setText(String.valueOf(imageDTO.getLikeCount()));
+                                        return ;
+                                    }
+
+                                    notifyDataSetChanged();
+                                }
+                            });
+                        }
+                        else{
+                            imageDTO.setLikeCount(imageDTO.getLikeCount()+1);
+                            imageDTO.getLikedPeople().put(uid,true);
+                            firestore.collection("images").whereEqualTo("likedPeople",like).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                    if (value!=null){
+                                        holder.likeButton.setImageResource(R.drawable.clickheart);
+                                        holder.textView.setText(String.valueOf(imageDTO.getLikeCount()));
+                                        return ;
+                                    }
+                                    notifyDataSetChanged();
+                                }
+                            });
+                        }
+
+                        transaction.set(tsdoc,imageDTO);
+                        return null;
+                    }
+                });
+
+            }
+        });
         setAnimation(holder.imageView, position);
     }
 
