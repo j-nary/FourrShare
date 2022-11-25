@@ -30,6 +30,8 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
+    ExtensionDialog dlog;
+
 
     // 생성자에서 데이터 리스트 객체, Context를 전달받음.
     MultiImageAdapter(Context context, ArrayList<ImageDTO> imageDTOS) {

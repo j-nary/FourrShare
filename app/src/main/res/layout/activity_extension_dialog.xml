@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ExtensionDialog"
+    android:orientation="vertical"
+    android:weightSum="10">
+
+    <ImageView
+        android:id="@+id/extensionImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:padding="40dp"/>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+        <TableRow
+            android:weightSum="3">
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="100dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toLeftOf="@+id/sw"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#000000"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:text="off"/>
+
+                <Switch
+                    android:id="@+id/sw"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text=""
+                    android:textOff=""
+                    android:textOn=""
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track_selector" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toRightOf="@+id/sw"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="#FF0000"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:text="on"/>
+
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="100dp"
+                android:id="@+id/dialog_download"
+                android:src="@drawable/download" />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="100dp"
+                android:id="@+id/dialog_delete"
+                android:src="@drawable/delete"/>
+        </TableRow>
+
+        <TableRow
+            android:weightSum="3"
+            android:layout_gravity="bottom">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="업로드"
+                android:textAlignment="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="다운로드"
+                android:textAlignment="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="삭제"
+                android:textAlignment="center"/>
+
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>
