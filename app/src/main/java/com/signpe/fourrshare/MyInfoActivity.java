@@ -1,5 +1,7 @@
 package com.signpe.fourrshare;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -12,19 +14,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
+import com.signpe.fourrshare.model.ImageDTO;
+
+import java.util.ArrayList;
 
 public class MyInfoActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
+    private ArrayList<ImageDTO> imageDTOs = new ArrayList<>();
+    public ArrayList<String> imageUidList = new ArrayList<>();
+    private FirebaseFirestore firestore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_info);
         mAuth = FirebaseAuth.getInstance();
         Button logout = findViewById(R.id.logout_button);
-
+        firestore = FirebaseFirestore.getInstance();
         EditText nameEdit = findViewById(R.id.username);
         if (nameEdit.getText().toString() != null){
             nameEdit.setText(mAuth.getCurrentUser().getDisplayName());
@@ -54,6 +70,58 @@ public class MyInfoActivity extends AppCompatActivity {
             }
         });
         nameEdit.setText(nameEdit.getText());
+
+
+        firestore = FirebaseFirestore.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        firestore.collection("images").whereEqualTo("uid",uid).orderBy("timeStamp").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots==null)
+                            return;
+                        try{
+                            for(DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                                ImageDTO item = snapshot.toObject(ImageDTO.class);
+                                imageDTOs.add(item);
+                                imageUidList.add(snapshot.getId());
+                            }
+                            for(String imageUid : imageUidList){
+                                final DocumentReference sfDocRef = firestore.collection("images").document(imageUid);
+                                firestore.runTransaction(new Transaction.Function<Void>() {
+                                    @Nullable
+                                    @Override
+                                    public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                                        String newNickname = nameEdit.getText().toString();
+                                        transaction.update(sfDocRef,"userNickname",newNickname);
+                                        return null;
+                                    }
+                                }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(MyInfoActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                        }
+                        catch (Exception e){
+
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MyInfoActivity.this, "fuck", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
     }
 
     // 네비게이션 바
