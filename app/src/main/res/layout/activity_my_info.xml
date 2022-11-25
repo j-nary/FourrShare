@@ -15,16 +15,32 @@
         android:maxWidth="25dp"
         android:layout_marginTop="100dp"/>
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp">
     <EditText
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:inputType="textNoSuggestions"
+        android:maxLength="15"
         android:hint="이름을 입력해주세요."
         android:layout_gravity="center"
-        android:enabled="true"
-        android:layout_marginTop="60dp"/>
+        android:enabled="true"/>
+    <Button
+        android:id="@+id/save_name"
+        android:layout_width="63dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#8ECBDA"
+        android:text="저장"
+        android:onClick="onClickChangeName"/>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/logout_button"
