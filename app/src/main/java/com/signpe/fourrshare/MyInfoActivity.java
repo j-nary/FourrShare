@@ -116,7 +116,7 @@ public class MyInfoActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MyInfoActivity.this, "fuck", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyInfoActivity.this, "fail to load", Toast.LENGTH_SHORT).show();
                     }
                 });
 
