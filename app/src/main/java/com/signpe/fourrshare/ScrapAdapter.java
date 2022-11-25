@@ -1,5 +1,7 @@
 package com.signpe.fourrshare;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,31 +13,75 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
+import com.signpe.fourrshare.model.ImageDTO;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<ScrapItem> items;
     private int lastPosition = -1;
+    private boolean order;
+    private String state;
+    private FirebaseFirestore firestore;
+    ArrayList<ImageDTO> imageDTOs;
+    public ArrayList<String> imageUidList = new ArrayList<>();
 
-    public ScrapAdapter(ArrayList<ScrapItem> items, Context context) {
-        this.items = items;
+    public ScrapAdapter(Context context, ArrayList<ImageDTO> imageDTOS) {
+        this.imageDTOs = imageDTOS;
         this.context = context;
+
+        firestore = FirebaseFirestore.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        HashMap<String,Boolean> usr_liked = new HashMap(){{put(uid,true);}};
+        firestore.collection("images").whereEqualTo("likedPeople."+uid,true).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots==null)
+                            return;
+                        try{
+                            for(DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                                ImageDTO item = snapshot.toObject(ImageDTO.class);
+                                imageDTOS.add(item);
+                                imageUidList.add(snapshot.getId());
+                            }
+                        }
+                        catch (Exception e){
+
+                        }
+                        notifyDataSetChanged();
+                    }
+                });
     }
 
     //뷰 바인딩 부분을 한번만 하도록, ViewHolder 패턴 의무화
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textView;
+        TextView usr_nickname;
 
         public ViewHolder(View view) {
             super(view);
-
             imageView = (ImageView) view.findViewById(R.id.image_view);
             textView = (TextView) view.findViewById(R.id.text_view);
+            usr_nickname = view.findViewById(R.id.usr_nickname);
         }
     }
 
@@ -51,17 +97,17 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
 
     //RecyclerView의 getView 부분을 담당
     @Override
-    public void onBindViewHolder(@NonNull ScrapAdapter.ViewHolder holder, int position) {
-        holder.imageView.setImageResource(items.get(position).getImage());
-        holder.textView.setText(items.get(position).getImageTitle());
-
+    public void onBindViewHolder(@NonNull ScrapAdapter.ViewHolder holder,@SuppressLint("RecyclerView") int position) {
+        Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
+        holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
+        holder.usr_nickname.setText(String.valueOf(imageDTOs.get(position).getUserNickname()));
         setAnimation(holder.imageView, position);
     }
 
     //Item 개수 반환
     @Override
     public int getItemCount() {
-        return items.size();
+        return imageDTOs.size();
     }
 
     //View 나올 때 Animation 주기
