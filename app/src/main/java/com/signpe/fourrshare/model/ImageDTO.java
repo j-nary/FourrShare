@@ -7,6 +7,7 @@ public class ImageDTO {
     private String imageUri;
     private String uid;
     private String userId;
+    private String userNickname;
     private String timeStamp;
     private boolean isUpload;
     private int likeCount;
@@ -23,6 +24,8 @@ public class ImageDTO {
     public String getUserId(){
         return userId;
     }
+
+    public String getUserNickname() { return userNickname; }
 
     public boolean getIsUpload() { return isUpload; }
 
@@ -48,6 +51,8 @@ public class ImageDTO {
     public void setUserId(String userId){
         this.userId=userId;
     }
+
+    public void setUserNickname(String userNickname) { this.userNickname=userNickname; }
 
     public void setTimeStamp(String timeStamp){
         this.timeStamp=timeStamp;

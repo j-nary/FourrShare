@@ -132,6 +132,7 @@ public class GalleryActivity extends AppCompatActivity {
                             dto.setImageUri(img_uri);
                             dto.setUid(currentUser.getUid());
                             dto.setUserId(currentUser.getEmail());
+                            dto.setUserNickname(currentUser.getDisplayName());
                             dto.setTimeStamp(sdf.format(timestamp));
                             dto.setLikeCount(0);
                             dto.setIsUpload(false);

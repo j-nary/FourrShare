@@ -87,12 +87,14 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
         ImageView imageView;
         ImageView likeButton;
         TextView textView;
+        TextView usr_nickname;
 
         public ViewHolder(View view) {
             super(view);
             imageView = (ImageView) view.findViewById(R.id.image_view);
             likeButton = (ImageView) view.findViewById(R.id.like_button);
             textView = (TextView) view.findViewById(R.id.text_view);
+            usr_nickname = view.findViewById(R.id.usr_nickname);
         }
     }
 
@@ -109,6 +111,8 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RankAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
+        holder.usr_nickname.setText(imageDTOs.get(position).getUserNickname());
+
         if(imageDTOs.get(position).getLikedPeople().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             holder.likeButton.setImageResource(R.drawable.clickheart);
         }

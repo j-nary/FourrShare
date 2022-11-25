@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -43,10 +44,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAuth = FirebaseAuth.getInstance();
+
         loginChk();
         TextView tester=  findViewById(R.id.main_text);
-      tester.setText(currentUser.getEmail());
+
+        mAuth = FirebaseAuth.getInstance();
+        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName("종정우").build();
+        mAuth.getCurrentUser().updateProfile(profileChangeRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(MainActivity.this, "변경완료", Toast.LENGTH_SHORT).show();
+            }
+        });
+        tester.setText(currentUser.getDisplayName());
         Button TESTBUTTON = findViewById(R.id.TEST_BUTTON);
         imageView = findViewById(R.id.imageview);
         TESTBUTTON.setOnClickListener(new View.OnClickListener() {

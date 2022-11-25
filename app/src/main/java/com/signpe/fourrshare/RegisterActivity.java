@@ -12,13 +12,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    EditText nickname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         Button register= findViewById(R.id.register_button);
         EditText id = findViewById(R.id.input_id);
+        nickname = findViewById(R.id.input_nickname);
         EditText pw = findViewById(R.id.input_pw);
         EditText check_pw = findViewById(R.id.input_check_pw);
 
@@ -75,10 +79,18 @@ public class RegisterActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             Log.d("superdroid", "createUserWithEmail:success");
-                            Toast.makeText(getApplicationContext(),"회원가입 성공",Toast.LENGTH_SHORT).show();
-                            Intent myintent = new Intent(getApplicationContext(),LoginActivity.class);
-                            finish();
-                            startActivity(myintent);
+                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(nickname.getText().toString()).build();
+                            mAuth.getCurrentUser().updateProfile(profileChangeRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(getApplicationContext(),"회원가입 성공",Toast.LENGTH_SHORT).show();
+                                    Intent myintent = new Intent(getApplicationContext(),LoginActivity.class);
+                                    finish();
+                                    startActivity(myintent);
+                                }
+                            });
+
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "이미 존재하는 이메일 입니다.",

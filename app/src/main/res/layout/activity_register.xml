@@ -9,7 +9,16 @@
         android:id="@+id/input_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
         android:hint="이메일" />
+
+    <EditText
+        android:id="@+id/input_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textNoSuggestions"
+        android:maxLength="15"
+        android:hint="닉네임"/>
 
     <EditText
         android:id="@+id/input_pw"

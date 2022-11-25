@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    //Todo : Logout 만든 뒤 연결해줘야함
+    //Todo : Logout 만든 뒤 연결해줘야함 onStart로 바꿔주자
     public void loginChk() {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
