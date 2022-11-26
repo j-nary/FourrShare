@@ -8,14 +8,20 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.signpe.fourrshare.model.ImageDTO;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,8 +58,30 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+
+        Intent intent = getIntent();
+//        Toast.makeText(this, intent.getStringExtra("urls"), Toast.LENGTH_SHORT).show();
+        if (!TextUtils.isEmpty(intent.getStringExtra("urls"))){
+            Bitmap bitmap = null;
+            Glide.with(getApplicationContext()).asBitmap().load(intent.getStringExtra("urls")).into(new CustomTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    resource.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                    byte[] data= baos.toByteArray();
+                    contentUpLoad(data);
+                }
+
+                @Override
+                public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                }
+            });
+        }
+
         // 앨범으로 이동하는 버튼
         Button btn_getImage = findViewById(R.id.getImage);
         btn_getImage.setOnClickListener(new View.OnClickListener() {
@@ -119,6 +148,8 @@ public class GalleryActivity extends AppCompatActivity {
             count++;
             inner_cnt++;
             StorageReference ImageRef = storageRef.child("images").child(currentUser.getUid()).child(fileName);
+            Toast.makeText(this, uri.toString(), Toast.LENGTH_SHORT).show();
+
             UploadTask uploadTask = ImageRef.putFile(uri);
             int finalInner_cnt = inner_cnt;
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -158,6 +189,49 @@ public class GalleryActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void contentUpLoad(byte[] data){ // for qr scan
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String fileName = "user_" + sdf.format(timestamp) + 1 + "_.png";
+            StorageReference ImageRef = storageRef.child("images").child(currentUser.getUid()).child(fileName);
+
+            UploadTask uploadTask = ImageRef.putBytes(data);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String img_uri = uri.toString();
+                            ImageDTO dto = new ImageDTO();
+                            dto.setImageUri(img_uri);
+                            dto.setUid(currentUser.getUid());
+                            dto.setUserId(currentUser.getEmail());
+                            dto.setUserNickname(currentUser.getDisplayName());
+                            dto.setTimeStamp(sdf.format(timestamp));
+                            dto.setLikeCount(0);
+                            dto.setIsUpload(false);
+
+                            db.collection("images").document().set(dto).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                        startActivity(new Intent(getApplicationContext(),GalleryActivity.class));
+                                        finish();
+                                        overridePendingTransition(0,0);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(), "업로드 실패", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+//                Toast.makeText(MainActivity.this, "succes!!", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
     // 네비게이션 바
     public void onClickNavigationBar(View v){

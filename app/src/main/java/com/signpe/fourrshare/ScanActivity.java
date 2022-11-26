@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -25,23 +26,16 @@ import java.io.IOException;
 
 public class ScanActivity extends AppCompatActivity {
     private final int REQ_CAMERA_PERMISSION = 1001;
+    ImageView myimg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         String url = "https://upload.wikimedia.org/wikipedia/ko/1/1c/T1%EB%A1%9C%EA%B3%A0.jpg";
-        ImageView myimg = findViewById(R.id.imgview);
-        Bitmap mybtm=null;
-        ImageDownload imageDownload = new ImageDownload(url,myimg);
-        imageDownload.execute();
+         myimg = findViewById(R.id.imgview);
 
-        int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if(permission == PackageManager.PERMISSION_DENIED){
-            // 권한 없어서 요청
-        }else{
-            // 권한
-            new IntentIntegrator(this).setOrientationLocked(false).setPrompt("QR스캔").initiateScan ();
-        }
+
+
 
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.CAMERA},REQ_CAMERA_PERMISSION);
@@ -56,10 +50,8 @@ public class ScanActivity extends AppCompatActivity {
             case 1001:
 
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    finish();//인텐트 종료
-                    overridePendingTransition(0, 0);//인텐트 효과 없애기//인텐트
-                    startActivity(getIntent()); //액티비티 열기
-                    overridePendingTransition(0, 0);//인텐트 효과 없애기
+                    new IntentIntegrator(this).setOrientationLocked(false).setPrompt("QR스캔").initiateScan ();
+
                 } else {
                     //거부했을 경우
                     Toast toast = Toast.makeText(this, "기능 사용을 위한 권한 동의가 필요합니다.", Toast.LENGTH_SHORT);
@@ -77,20 +69,20 @@ public class ScanActivity extends AppCompatActivity {
             if (result.getContents () == null) {
                 Toast.makeText (this, "전달할 값이 없습니다.", Toast.LENGTH_LONG).show ();
             } else {
-                Toast.makeText (this, "Scanned: " + result.getContents (), Toast.LENGTH_LONG).show ();
-                checkTypeOfPicture(result.getContents());
+//                Toast.makeText (this, "Scanned: " + result.getContents (), Toast.LENGTH_LONG).show ();
+//                Glide.with(getApplicationContext()).load(result.getContents()).into(myimg);
+//                Glide.with(getApplicationContext()).load(result.getContents()).into()
+                Intent intent = new Intent(this,GalleryActivity.class);
+                intent.putExtra("urls",result.getContents());
+                finish();
+                startActivity(intent);
+
             }
         } else {
             super.onActivityResult (requestCode, resultCode, data);
         }
 //        finish();
     }
-    private int checkTypeOfPicture(String result){
-        //
-
-        return 0;
-    }
-
 
 
 
