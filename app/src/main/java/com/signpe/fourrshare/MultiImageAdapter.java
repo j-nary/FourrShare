@@ -70,9 +70,17 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
         ViewHolder(View itemView) {
             super(itemView) ;
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ExtensionDialog exDialog = new ExtensionDialog(MultiImageAdapter.this, image);
+                    exDialog.callFunction();
+                }
+            });
             // 뷰 객체에 대한 참조.
             image = itemView.findViewById(R.id.image);
         }
+
     }
 
 
