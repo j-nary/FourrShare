@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Query.Direction;
 import com.google.firebase.firestore.Transaction;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.signpe.fourrshare.model.ImageDTO;
 
 import java.util.ArrayList;
@@ -42,6 +45,9 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     private boolean order;
     private String state;
     private FirebaseFirestore firestore;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReference();
+
     ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
@@ -88,6 +94,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
         ImageView likeButton;
         TextView textView;
         TextView usr_nickname;
+        ImageView usr_icon;
 
         public ViewHolder(View view) {
             super(view);
@@ -95,6 +102,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
             likeButton = (ImageView) view.findViewById(R.id.like_button);
             textView = (TextView) view.findViewById(R.id.text_view);
             usr_nickname = view.findViewById(R.id.usr_nickname);
+            usr_icon = view.findViewById(R.id.view_profile_image);
         }
     }
 
@@ -111,6 +119,14 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RankAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
+        StorageReference ImageRef = storageRef.child("profile").child(imageDTOs.get(position).getUid()).child(imageDTOs.get(position).getUid()+".png");
+        ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(holder.itemView).load(uri).into(holder.usr_icon);
+            }
+        });
+
         holder.usr_nickname.setText(imageDTOs.get(position).getUserNickname());
 
         if(imageDTOs.get(position).getLikedPeople().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid())){
