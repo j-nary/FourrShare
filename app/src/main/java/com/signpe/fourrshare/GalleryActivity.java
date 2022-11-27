@@ -148,8 +148,6 @@ public class GalleryActivity extends AppCompatActivity {
             count++;
             inner_cnt++;
             StorageReference ImageRef = storageRef.child("images").child(currentUser.getUid()).child(fileName);
-            Toast.makeText(this, uri.toString(), Toast.LENGTH_SHORT).show();
-
             UploadTask uploadTask = ImageRef.putFile(uri);
             int finalInner_cnt = inner_cnt;
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
