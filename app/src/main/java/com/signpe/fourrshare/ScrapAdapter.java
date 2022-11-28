@@ -3,6 +3,7 @@ package com.signpe.fourrshare;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.signpe.fourrshare.model.ImageDTO;
 
 import java.util.ArrayList;
@@ -40,6 +43,8 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
     private boolean order;
     private String state;
     private FirebaseFirestore firestore;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReference();
     ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
@@ -77,6 +82,7 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
         TextView textView;
         TextView usr_nickname;
         ImageView likeButton;
+        ImageView usr_icon;
 
         public ViewHolder(View view) {
             super(view);
@@ -84,6 +90,7 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
             textView = (TextView) view.findViewById(R.id.text_view);
             usr_nickname = view.findViewById(R.id.usr_nickname);
             likeButton = view.findViewById(R.id.like_button);
+            usr_icon = view.findViewById(R.id.view_profile_image);
         }
     }
 
@@ -100,6 +107,14 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
     //RecyclerView의 getView 부분을 담당
     @Override
     public void onBindViewHolder(@NonNull ScrapAdapter.ViewHolder holder,@SuppressLint("RecyclerView") int position) {
+
+        StorageReference ImageRef = storageRef.child("profile").child(imageDTOs.get(position).getUid()).child(imageDTOs.get(position).getUid()+".png");
+        ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(holder.itemView).load(uri).into(holder.usr_icon);
+            }
+        });
         Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
         holder.likeButton.setImageResource(R.drawable.clickheart);
         holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );

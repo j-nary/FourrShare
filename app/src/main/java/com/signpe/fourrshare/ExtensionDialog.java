@@ -1,9 +1,11 @@
 package com.signpe.fourrshare;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +15,43 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+
 public class ExtensionDialog extends AppCompatActivity {
     private Context context;
     private ImageView getImage;
+    private Context mContext;
+    private int position;
+    public ArrayList<String> imageUidList;
+    private FirebaseFirestore firestore= FirebaseFirestore.getInstance();
+    private CustomDialogListener customDialogListener;
+    Dialog dlg;
 
-    public ExtensionDialog(Context context, ImageView image) {
+    interface CustomDialogListener{
+        void onFresh(int position);
+    }
+
+    //호출할 리스너 초기화
+    public void setDialogListener(CustomDialogListener customDialogListener){
+        this.customDialogListener = customDialogListener;
+    }
+
+    public ExtensionDialog(Context context, ImageView image, int position,ArrayList<String> imageUidList,Context mContext) {
         this.context = context;
         getImage = image;
+        this.position= position;
+        this.imageUidList = imageUidList;
+        this.mContext=mContext;
     }
 
     //호출할 다이얼로그 함수 정의
     public void callFunction() {
         //커스텀 다이얼로그 정의하기 위한 dialog클래스 생성
-        final Dialog dlg;
         dlg = new Dialog(context);
         Window window = dlg.getWindow();
 
@@ -58,7 +84,7 @@ public class ExtensionDialog extends AppCompatActivity {
         downBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //다운로드 버튼 클릭시
+
             }
         });
 
@@ -66,7 +92,22 @@ public class ExtensionDialog extends AppCompatActivity {
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //삭제 버튼 클릭시
+
+                firestore.collection("images").document(imageUidList.get(position)).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(context, "삭제 완료", Toast.LENGTH_SHORT).show();
+                        dlg.dismiss();
+                        customDialogListener.onFresh(position);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, "failed to delete", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
             }
         });
 

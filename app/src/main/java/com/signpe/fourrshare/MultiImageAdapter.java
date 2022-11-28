@@ -32,7 +32,10 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
 
     ExtensionDialog dlog;
 
+    public interface onClickInterFace{
 
+        void refreshView();
+    }
     // 생성자에서 데이터 리스트 객체, Context를 전달받음.
     MultiImageAdapter(Context context, ArrayList<ImageDTO> imageDTOS) {
 //        mData = list ;
@@ -70,13 +73,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
         ViewHolder(View itemView) {
             super(itemView) ;
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ExtensionDialog exDialog = new ExtensionDialog(image.getContext(), image);
-                    exDialog.callFunction();
-                }
-            });
+
             // 뷰 객체에 대한 참조.
             image = itemView.findViewById(R.id.image);
         }
@@ -101,7 +98,25 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     public void onBindViewHolder(MultiImageAdapter.ViewHolder holder, int position) {
 //        Uri image_uri = mData.get(position) ;
         Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.image);
-        setAnimation(holder.image, position);
+//        setAnimation(holder.image, position);
+
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExtensionDialog exDialog = new ExtensionDialog(holder.image.getContext(), holder.image,holder.getAdapterPosition(),imageUidList,mContext);
+                exDialog.setDialogListener(new ExtensionDialog.CustomDialogListener() {
+                    @Override
+                    public void onFresh(int position) {
+                        imageDTOs.remove(position);
+                        imageUidList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position,imageDTOs.size());
+                    }
+                });
+
+                exDialog.callFunction();
+            }
+        });
 //        Glide.with(mContext)
 //                .load(image_uri)
 //                .into(holder.image);
@@ -114,12 +129,12 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
         return imageDTOs.size();
     }
 
-    private void setAnimation(View viewToAnimate, int position) {
-        if (position > lastPosition) {
-            Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left);
-            viewToAnimate.setAnimation(animation);
-            lastPosition = position;
-        }
-    }
+//    private void setAnimation(View viewToAnimate, int position) {
+//        if (position > lastPosition) {
+//            Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left);
+//            viewToAnimate.setAnimation(animation);
+//            lastPosition = position;
+//        }
+//    }
 
 }

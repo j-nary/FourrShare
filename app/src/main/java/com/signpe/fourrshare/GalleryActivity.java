@@ -143,6 +143,7 @@ public class GalleryActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         int count=0;
         int inner_cnt=0;
+        int temp_dto_size = adapter.imageDTOs.size();
         for(Uri uri : uriList) {
             String fileName = "user_" + sdf.format(timestamp) + count + "_.png";
             count++;
@@ -165,14 +166,16 @@ public class GalleryActivity extends AppCompatActivity {
                             dto.setTimeStamp(sdf.format(timestamp));
                             dto.setLikeCount(0);
                             dto.setIsUpload(false);
+                            adapter.imageDTOs.add(dto);
+                            if (uriList.size() == finalInner_cnt)
+                                adapter.notifyItemRangeInserted(temp_dto_size,uriList.size());
 
                             db.collection("images").document().set(dto).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
+
                                     if (uriList.size() == finalInner_cnt){
-                                        startActivity(new Intent(getApplicationContext(),GalleryActivity.class));
-                                        finish();
-                                        overridePendingTransition(0,0);
+
                                     }
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -183,10 +186,10 @@ public class GalleryActivity extends AppCompatActivity {
                             });
                         }
                     });
-//                Toast.makeText(MainActivity.this, "succes!!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
+
     }
 
     private void contentUpLoad(byte[] data){ // for qr scan
@@ -211,13 +214,12 @@ public class GalleryActivity extends AppCompatActivity {
                             dto.setTimeStamp(sdf.format(timestamp));
                             dto.setLikeCount(0);
                             dto.setIsUpload(false);
-
+                            adapter.imageDTOs.add(dto);
+                            adapter.notifyItemInserted(0);
                             db.collection("images").document().set(dto).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                        startActivity(new Intent(getApplicationContext(),GalleryActivity.class));
-                                        finish();
-                                        overridePendingTransition(0,0);
+
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
