@@ -13,12 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="7.5"
-        android:padding="40dp"/>
+        android:padding="10dp"/>
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2.5">
+        android:layout_weight="2.5"
+        android:paddingLeft="5dp">
 
         <TableRow
             android:weightSum="3">
@@ -26,16 +27,6 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="100dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_toLeftOf="@+id/sw"
-                    android:layout_marginRight="10dp"
-                    android:textColor="#000000"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:text="off"/>
 
                 <Switch
                     android:id="@+id/sw"
@@ -48,16 +39,6 @@
                     android:thumb="@drawable/switch_thumb"
                     android:track="@drawable/switch_track_selector"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_toRightOf="@+id/sw"
-                    android:layout_marginLeft="10dp"
-                    android:textColor="#FF0000"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:text="on"/>
 
             </RelativeLayout>
             <ImageView
@@ -81,19 +62,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="업로드"
+                android:text=" 업로드"
                 android:textAlignment="center"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="다운로드"
+                android:text="다운로드 "
                 android:textAlignment="center"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="삭제"
+                android:text="삭제  "
                 android:textAlignment="center"/>
 
         </TableRow>
@@ -112,9 +93,9 @@
                 android:gravity="right"
                 android:layout_gravity="right"
                 android:src="@drawable/ok"
-                android:id="@+id/dialog_ok"/>
+                android:id="@+id/dialog_ok"
+                android:paddingBottom="15dp"/>
         </TableRow>
-
     </TableLayout>
 
 </LinearLayout>

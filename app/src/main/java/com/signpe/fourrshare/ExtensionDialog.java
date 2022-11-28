@@ -32,7 +32,6 @@ public class ExtensionDialog extends AppCompatActivity {
         Rect displayRectangle = new Rect();
         window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
 
-        Toast.makeText(context, "gogogogo", Toast.LENGTH_SHORT).show();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.activity_extension_dialog,null);
         layout.setMinimumWidth((int)(displayRectangle.width() * 0.9f));
@@ -41,6 +40,7 @@ public class ExtensionDialog extends AppCompatActivity {
         dlg.show();
 
         ImageView iv = dlg.findViewById(R.id.extensionImage);
+        iv.setImageDrawable(getImage.getDrawable());
 
         Switch switchButton =dlg. findViewById(R.id.sw);
         switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
