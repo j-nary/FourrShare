@@ -1,25 +1,35 @@
 package com.signpe.fourrshare;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
 import com.signpe.fourrshare.model.ImageDTO;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder>{
     private FirebaseFirestore firestore;
@@ -35,6 +45,8 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     public interface onClickInterFace{
 
         void refreshView();
+
+
     }
     // 생성자에서 데이터 리스트 객체, Context를 전달받음.
     MultiImageAdapter(Context context, ArrayList<ImageDTO> imageDTOS) {
@@ -103,7 +115,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ExtensionDialog exDialog = new ExtensionDialog(holder.image.getContext(), holder.image,holder.getAdapterPosition(),imageUidList,mContext);
+                ExtensionDialog exDialog = new ExtensionDialog(holder.image.getContext(), holder.image,holder.getAdapterPosition(),imageUidList,mContext,imageDTOs.get(holder.getAdapterPosition()).getIsUpload());
                 exDialog.setDialogListener(new ExtensionDialog.CustomDialogListener() {
                     @Override
                     public void onFresh(int position) {
@@ -111,6 +123,51 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
                         imageUidList.remove(position);
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position,imageDTOs.size());
+                    }
+
+                    @Override
+                    public void saveImage(ImageView images) {
+                        images.setDrawingCacheEnabled(true);
+                        Bitmap bitmap = images.getDrawingCache();
+                        MediaStore.Images.Media.insertImage(mContext.getContentResolver(),bitmap,"test","testing");
+                    }
+
+                    @Override
+                    public void doUpload(int position) {
+                        final DocumentReference sfDocRef = firestore.collection("images").document(imageUidList.get(position));
+                        firestore.runTransaction(new Transaction.Function<Void>() {
+                            @Nullable
+                            @Override
+                            public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                                transaction.update(sfDocRef,"isUpload",true);
+                                return null;
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(mContext, "업로드 완료", Toast.LENGTH_SHORT).show();
+                                imageDTOs.get(position).setIsUpload(true);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void cancelUpload(int position) {
+                        final DocumentReference sfDocRef = firestore.collection("images").document(imageUidList.get(position));
+                        firestore.runTransaction(new Transaction.Function<Void>() {
+                            @Nullable
+                            @Override
+                            public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                                transaction.update(sfDocRef,"isUpload",false);
+                                return null;
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(mContext, "업로드 취소 완료", Toast.LENGTH_SHORT).show();
+                                imageDTOs.get(position).setIsUpload(false);
+                            }
+                        });
                     }
                 });
 

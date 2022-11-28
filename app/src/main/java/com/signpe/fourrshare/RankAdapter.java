@@ -118,12 +118,12 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     //RecyclerView의 getView 부분을 담당 3
     @Override
     public void onBindViewHolder(@NonNull RankAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
+        Glide.with(context).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
         StorageReference ImageRef = storageRef.child("profile").child(imageDTOs.get(position).getUid()).child(imageDTOs.get(position).getUid()+".png");
         ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Glide.with(holder.itemView).load(uri).into(holder.usr_icon);
+                Glide.with(context).load(uri).into(holder.usr_icon);
             }
         });
 

@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.signpe.fourrshare.model.ImageDTO;
 
 import java.util.ArrayList;
 
@@ -30,10 +31,17 @@ public class ExtensionDialog extends AppCompatActivity {
     public ArrayList<String> imageUidList;
     private FirebaseFirestore firestore= FirebaseFirestore.getInstance();
     private CustomDialogListener customDialogListener;
+    private boolean uploaded;
     Dialog dlg;
 
     interface CustomDialogListener{
         void onFresh(int position);
+
+        void saveImage(ImageView images);
+
+        void doUpload(int position);
+
+        void cancelUpload(int position);
     }
 
     //호출할 리스너 초기화
@@ -41,12 +49,14 @@ public class ExtensionDialog extends AppCompatActivity {
         this.customDialogListener = customDialogListener;
     }
 
-    public ExtensionDialog(Context context, ImageView image, int position,ArrayList<String> imageUidList,Context mContext) {
+    public ExtensionDialog(Context context, ImageView image, int position,ArrayList<String> imageUidList,Context mContext,boolean uploaded) {
         this.context = context;
         getImage = image;
         this.position= position;
         this.imageUidList = imageUidList;
         this.mContext=mContext;
+        this.uploaded=uploaded;
+
     }
 
     //호출할 다이얼로그 함수 정의
@@ -69,13 +79,18 @@ public class ExtensionDialog extends AppCompatActivity {
         iv.setImageDrawable(getImage.getDrawable());
 
         Switch switchButton =dlg. findViewById(R.id.sw);
+        if(uploaded) switchButton.setChecked(true);
+
         switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     // switchButton이 체크된 경우
+                    customDialogListener.doUpload(position);
                 } else {
                     // switchButton이 체크되지 않은 경우
+
+                    customDialogListener.cancelUpload(position);
                 }
             }
         });
@@ -84,7 +99,9 @@ public class ExtensionDialog extends AppCompatActivity {
         downBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                customDialogListener.saveImage(getImage);
+                Toast.makeText(context, "갤러리에 저장되었습니다!", Toast.LENGTH_SHORT).show();
+                dlg.dismiss();
             }
         });
 

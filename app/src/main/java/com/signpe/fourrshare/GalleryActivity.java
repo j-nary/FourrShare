@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class GalleryActivity extends AppCompatActivity {
-
+    
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
