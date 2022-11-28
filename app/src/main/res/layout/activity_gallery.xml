@@ -35,6 +35,16 @@
         android:textColor="@color/black"
         android:textSize="20dp" />
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/linear_prog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:indeterminate="true"
+        app:indicatorColor="#128BFF"
+        android:visibility="invisible"
+        android:layout_marginRight="10dp"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

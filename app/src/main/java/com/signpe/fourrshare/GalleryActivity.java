@@ -12,10 +12,13 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -24,8 +27,10 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -38,13 +43,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class GalleryActivity extends AppCompatActivity {
-    
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
-
+    LinearProgressIndicator linearProgressIndicator;
     private static final String TAG = "MultiImageActivity";
     private RecyclerView.Adapter Adapter;
     private RecyclerView.LayoutManager LayoutManager;
@@ -61,10 +66,11 @@ public class GalleryActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
+         linearProgressIndicator = findViewById(R.id.linear_prog);
         Intent intent = getIntent();
 //        Toast.makeText(this, intent.getStringExtra("urls"), Toast.LENGTH_SHORT).show();
         if (!TextUtils.isEmpty(intent.getStringExtra("urls"))){
+            linearProgressIndicator.setVisibility(View.VISIBLE);
             Bitmap bitmap = null;
             Glide.with(getApplicationContext()).asBitmap().load(intent.getStringExtra("urls")).into(new CustomTarget<Bitmap>() {
                 @Override
@@ -107,7 +113,8 @@ public class GalleryActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        linearProgressIndicator.setProgressCompat(0,true);
+        linearProgressIndicator.setVisibility(View.VISIBLE);
         if(data == null){   // 어떤 이미지도 선택하지 않은 경우
             Toast.makeText(getApplicationContext(), "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show();
         }
@@ -167,23 +174,50 @@ public class GalleryActivity extends AppCompatActivity {
                             dto.setLikeCount(0);
                             dto.setIsUpload(false);
                             adapter.imageDTOs.add(dto);
-                            if (uriList.size() == finalInner_cnt)
-                                adapter.notifyItemRangeInserted(temp_dto_size,uriList.size());
+                            if (uriList.size() == finalInner_cnt) {
+                                adapter.notifyItemRangeInserted(temp_dto_size, uriList.size());
+                            }
 
-                            db.collection("images").document().set(dto).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
+                             db.collection("images").add(dto).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                 @Override
+                                 public void onSuccess(DocumentReference documentReference) {
+                                     adapter.imageUidList.add(documentReference.getId());
+                                     linearProgressIndicator.setProgressCompat(100*finalInner_cnt/uriList.size(),true);
+                                     if (uriList.size() == finalInner_cnt) {
+                                         Handler handler =new Handler();
+                                         handler.postDelayed(new Runnable() {
+                                             @Override
+                                             public void run() {
+                                                 AlphaAnimation anim = new AlphaAnimation(1, 0);
+                                                 anim.setDuration(1000);
+                                                 linearProgressIndicator.setAnimation(anim);
+                                                 linearProgressIndicator.startAnimation(anim);
+                                                 anim.setAnimationListener(new Animation.AnimationListener() {
+                                                     @Override
+                                                     public void onAnimationStart(Animation animation) {
 
-                                    if (uriList.size() == finalInner_cnt){
+                                                     }
 
-                                    }
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getApplicationContext(), "업로드 실패", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                                     @Override
+                                                     public void onAnimationEnd(Animation animation) {
+                                                         linearProgressIndicator.setVisibility(View.INVISIBLE);
+                                                     }
+
+                                                     @Override
+                                                     public void onAnimationRepeat(Animation animation) {
+
+                                                     }
+                                                 });
+                                             }
+                                         },1000);
+                                     }
+                                 }
+                             }).addOnFailureListener(new OnFailureListener() {
+                                 @Override
+                                 public void onFailure(@NonNull Exception e) {
+                                     Toast.makeText(GalleryActivity.this, "업로드 실패", Toast.LENGTH_SHORT).show();
+                                 }
+                             });
                         }
                     });
                 }
@@ -215,16 +249,46 @@ public class GalleryActivity extends AppCompatActivity {
                             dto.setLikeCount(0);
                             dto.setIsUpload(false);
                             adapter.imageDTOs.add(dto);
-                            adapter.notifyItemInserted(0);
-                            db.collection("images").document().set(dto).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            adapter.notifyItemInserted(adapter.imageDTOs.size()-1);
+                            adapter.notifyItemRangeChanged(adapter.imageDTOs.size()-1,adapter.imageDTOs.size());
+                            db.collection("images").add(dto).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
-                                public void onSuccess(Void unused) {
+                                public void onSuccess(DocumentReference documentReference) {
+                                    adapter.imageUidList.add(documentReference.getId());
+                                    linearProgressIndicator.setProgressCompat(100,true);
+                                    Handler handler =new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            AlphaAnimation anim = new AlphaAnimation(1, 0);
+                                            anim.setDuration(1000);
+                                            linearProgressIndicator.setAnimation(anim);
+                                            linearProgressIndicator.startAnimation(anim);
+                                            anim.setAnimationListener(new Animation.AnimationListener() {
+                                                @Override
+                                                public void onAnimationStart(Animation animation) {
+
+                                                }
+
+                                                @Override
+                                                public void onAnimationEnd(Animation animation) {
+                                                    linearProgressIndicator.setVisibility(View.INVISIBLE);
+                                                }
+
+                                                @Override
+                                                public void onAnimationRepeat(Animation animation) {
+
+                                                }
+                                            });
+                                        }
+                                    },1000);
+
 
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getApplicationContext(), "업로드 실패", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(GalleryActivity.this, "업로드 실패", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
