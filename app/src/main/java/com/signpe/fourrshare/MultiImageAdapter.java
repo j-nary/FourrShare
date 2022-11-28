@@ -30,6 +30,8 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
+    ExtensionDialog dlog;
+
 
     // 생성자에서 데이터 리스트 객체, Context를 전달받음.
     MultiImageAdapter(Context context, ArrayList<ImageDTO> imageDTOS) {
@@ -68,9 +70,17 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
         ViewHolder(View itemView) {
             super(itemView) ;
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ExtensionDialog exDialog = new ExtensionDialog(image.getContext(), image);
+                    exDialog.callFunction();
+                }
+            });
             // 뷰 객체에 대한 참조.
             image = itemView.findViewById(R.id.image);
         }
+
     }
 
 
