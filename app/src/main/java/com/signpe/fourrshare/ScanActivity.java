@@ -32,9 +32,6 @@ public class ScanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         String url = "https://upload.wikimedia.org/wikipedia/ko/1/1c/T1%EB%A1%9C%EA%B3%A0.jpg";
-         myimg = findViewById(R.id.imgview);
-
-
 
 
         ActivityCompat.requestPermissions(this,
@@ -68,6 +65,8 @@ public class ScanActivity extends AppCompatActivity {
         if (result != null) {
             if (result.getContents () == null) {
                 Toast.makeText (this, "전달할 값이 없습니다.", Toast.LENGTH_LONG).show ();
+                finish();
+                startActivity(new Intent(this,GalleryActivity.class));
             } else {
 //                Toast.makeText (this, "Scanned: " + result.getContents (), Toast.LENGTH_LONG).show ();
 //                Glide.with(getApplicationContext()).load(result.getContents()).into(myimg);
