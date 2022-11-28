@@ -6,15 +6,39 @@
     android:orientation="vertical"
     android:layout_gravity="center">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
-        android:layout_width="230dp"
-        android:layout_height="230dp"
-        android:src="@drawable/profile"
-        android:layout_gravity="center"
-        android:maxHeight="25dp"
-        android:maxWidth="25dp"
-        android:layout_marginTop="100dp"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="330dp">
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progress_circular"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:indicatorSize="240dp"
+                app:indicatorColor="@color/material_dynamic_primary50"
+                android:layout_marginTop="30dp"
+                android:visibility="invisible"
+                android:layout_gravity="center"
+                android:indeterminate="true"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="230dp"
+                android:layout_height="230dp"
+                android:src="@drawable/profile"
+                android:layout_gravity="center"
+                android:maxHeight="25dp"
+                android:maxWidth="25dp"
+                android:layout_marginTop="30dp"/>
+
+
+
+        </FrameLayout>
+
+
+
+
+
 
 
     <LinearLayout

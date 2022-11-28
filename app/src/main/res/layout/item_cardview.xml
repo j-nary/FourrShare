@@ -19,7 +19,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:orientation="horizontal">
 
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_marginLeft="15dp"
+                    android:id="@+id/view_profile_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"/>
+
+
+                <TextView
+                    android:id="@+id/usr_nickname"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"/>
+
+
+            </LinearLayout>
             <ImageView
                 android:id="@+id/image_view"
                 android:layout_width="match_parent"
@@ -43,27 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"/>
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:orientation="horizontal">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_marginLeft="15dp"
-                    android:id="@+id/view_profile_image"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"/>
-
-
-                <TextView
-                    android:id="@+id/usr_nickname"
-                    android:layout_marginLeft="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"/>
-
-
-            </LinearLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

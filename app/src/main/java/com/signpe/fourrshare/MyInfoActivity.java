@@ -9,11 +9,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,8 +26,13 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,6 +56,8 @@ public class MyInfoActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
+     CircularProgressIndicator circularProgressIndicator;
+    ImageView profile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +70,9 @@ public class MyInfoActivity extends AppCompatActivity {
             nameEdit.setText(mAuth.getCurrentUser().getDisplayName());
         }
 
+        circularProgressIndicator = findViewById(R.id.progress_circular);
+
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +81,7 @@ public class MyInfoActivity extends AppCompatActivity {
             }
         });
 
-        ImageView profile = findViewById(R.id.profile_image);
+         profile = findViewById(R.id.profile_image);
         Glide.with(getApplicationContext()).load(mAuth.getCurrentUser().getPhotoUrl()).into(profile);
 
         profile.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +101,7 @@ public class MyInfoActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == RESULT_OK) {
+                        circularProgressIndicator.setVisibility(View.VISIBLE);
                         Intent intent = result.getData();
                         Uri uri = intent.getData();
                         setProfileImage(uri);
@@ -109,10 +124,46 @@ public class MyInfoActivity extends AppCompatActivity {
                         mAuth.getCurrentUser().updateProfile(profileChangeRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(MyInfoActivity.this, "프로필 사진 설정 완료", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(),MyInfoActivity.class));
-                                finish();
-                                overridePendingTransition(0,0);
+                                Glide.with(getApplicationContext()).load(mAuth.getCurrentUser().getPhotoUrl()).placeholder(profile.getDrawable()).addListener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+//                                        circularProgressIndicator.setVisibility(View.INVISIBLE);
+                                        circularProgressIndicator.setProgressCompat(100,true);
+                                        Handler handler =new Handler();
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                AlphaAnimation anim = new AlphaAnimation(1, 0);
+                                                anim.setDuration(1000);
+                                                circularProgressIndicator.setAnimation(anim);
+                                                circularProgressIndicator.startAnimation(anim);
+                                                anim.setAnimationListener(new Animation.AnimationListener() {
+                                                    @Override
+                                                    public void onAnimationStart(Animation animation) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onAnimationEnd(Animation animation) {
+                                                        circularProgressIndicator.setVisibility(View.INVISIBLE);
+                                                    }
+
+                                                    @Override
+                                                    public void onAnimationRepeat(Animation animation) {
+
+                                                    }
+                                                });
+                                            }
+                                        },2500);
+
+                                        return false;
+                                    }
+                                }).into(profile);
                             }
                         });
                     }
