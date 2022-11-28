@@ -68,7 +68,7 @@ public class GalleryActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
-        adapter = new MultiImageAdapter(getApplicationContext(),imageDTOS);
+        adapter = new MultiImageAdapter(GalleryActivity.this,imageDTOS);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(LayoutManager);
 

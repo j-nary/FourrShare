@@ -73,7 +73,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ExtensionDialog exDialog = new ExtensionDialog(MultiImageAdapter.this, image);
+                    ExtensionDialog exDialog = new ExtensionDialog(image.getContext(), image);
                     exDialog.callFunction();
                 }
             });
