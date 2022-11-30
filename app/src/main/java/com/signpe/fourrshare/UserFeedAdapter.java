@@ -7,10 +7,9 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,7 +23,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query.Direction;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
@@ -35,17 +34,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
+public class UserFeedAdapter extends RecyclerView.Adapter<UserFeedAdapter.ViewHolder> {
 
-    interface RankInterface{
-        void getIntent(Intent intent);
-    }
-
+    private TextView heartcnt;
+    private int heartCnt=0;
     private Context context;
     private int lastPosition = -1;
     private boolean order;
-    RankInterface rankInterface;
     private String state;
+    private boolean complete=false;
     private FirebaseFirestore firestore;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
@@ -53,36 +50,29 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
-    public RankAdapter(Context context,ArrayList<ImageDTO> imageDTOS,boolean order) {
+    public UserFeedAdapter(Context context,ArrayList<ImageDTO> imageDTOS,String uid,TextView heartcnt) {
 
         this.context = context;
-        this.imageDTOs=imageDTOS;
-        this.order=order;
+        this.imageDTOs = imageDTOS;
+        this.heartcnt=heartcnt;
 
-        if (order){
-            state="likeCount";
-        }
-        else{
-            state="timeStamp";
-        }
         firestore = FirebaseFirestore.getInstance();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
-        firestore.collection("images").whereEqualTo("isUpload",true).orderBy(state,Direction.DESCENDING).get()
+        firestore.collection("images").whereEqualTo("isUpload", true).whereEqualTo("uid",uid).orderBy("timeStamp").get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (queryDocumentSnapshots==null)
+                        if (queryDocumentSnapshots == null)
                             return;
-                        try{
-                            for(DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                        try {
+                            for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
                                 ImageDTO item = snapshot.toObject(ImageDTO.class);
                                 imageDTOS.add(item);
                                 imageUidList.add(snapshot.getId());
+                                heartCnt += item.getLikeCount();
+                                heartcnt.setText(String.valueOf(heartCnt));
                             }
-                        }
-                        catch (Exception e){
+
+                        } catch (Exception e) {
 
                         }
                         notifyDataSetChanged();
@@ -90,8 +80,20 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
                 });
     }
 
-    //뷰 바인딩 부분을 한번만 하도록, ViewHolder 패턴 의무화
+    public int getHeartCnt(){
+        return heartCnt;
+    }
+
+    public boolean getcomplete(){
+        return complete;
+    }
+
+
+
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
+
         ImageView imageView;
         ImageView likeButton;
         TextView textView;
@@ -105,48 +107,25 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
             textView = (TextView) view.findViewById(R.id.text_view);
             usr_nickname = view.findViewById(R.id.usr_nickname);
             usr_icon = view.findViewById(R.id.view_profile_image);
+            usr_nickname.setVisibility(View.GONE);
+            usr_icon.setVisibility(View.GONE);
         }
     }
 
-    //새로운 뷰 생성 2
+
     @NonNull
     @Override
-    public RankAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public UserFeedAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cardview, parent,false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        UserFeedAdapter.ViewHolder viewHolder = new UserFeedAdapter.ViewHolder(view);
         return viewHolder;
     }
 
-    public void setRankInterface(RankInterface rankInterface){
-        this.rankInterface=rankInterface;
-    }
-
-    //RecyclerView의 getView 부분을 담당 3
 
     @Override
-    public void onBindViewHolder(@NonNull RankAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
+    public void onBindViewHolder(@NonNull UserFeedAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Glide.with(context).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
-        StorageReference ImageRef = storageRef.child("profile").child(imageDTOs.get(position).getUid()).child(imageDTOs.get(position).getUid()+".png");
-        ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(context).load(uri).into(holder.usr_icon);
-            }
-        });
 
-        holder.usr_nickname.setText(imageDTOs.get(position).getUserNickname());
-
-        holder.usr_nickname.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent= new Intent(context,UserFeedActivity.class);
-                intent.putExtra("nickName",holder.usr_nickname.getText().toString());
-                intent.putExtra("uid",imageDTOs.get(position).getUid());
-                rankInterface.getIntent(intent);
-
-            }
-        });
 
         if(imageDTOs.get(position).getLikedPeople().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             holder.likeButton.setImageResource(R.drawable.clickheart);
@@ -155,6 +134,9 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
             holder.likeButton.setImageResource(R.drawable.nonclickheart);
         }
         holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
+
+
+
         holder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,22 +189,11 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
 
             }
         });
-        setAnimation(holder.imageView, position);
+
     }
 
-    //Item 개수 반환
-    @Override //1
+    @Override
     public int getItemCount() {
         return imageDTOs.size();
     }
-
-    //View 나올 때 Animation 주기
-    private void setAnimation(View viewToAnimate, int position) {
-        if (position > lastPosition) {
-            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
-            viewToAnimate.setAnimation(animation);
-            lastPosition = position;
-        }
-    }
-
 }

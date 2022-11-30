@@ -26,6 +26,9 @@ public class RankActivity extends AppCompatActivity{
     private RecyclerView.Adapter rankAdapter;
     private RecyclerView.LayoutManager rankLayoutManager;
 
+    Intent mintent;
+
+
 
     //FireBase 관련 선언. 건들면 어플 죽어요 !
     ArrayList<ImageDTO> imageDTOS = new ArrayList<>();
@@ -64,6 +67,13 @@ public class RankActivity extends AppCompatActivity{
 
         rankAdapter = new RankAdapter(getApplicationContext(), imageDTOS, sharedpreferences.getBoolean("state",false));
         rankRecyclerView.setAdapter(rankAdapter);
+        ((RankAdapter)rankRecyclerView.getAdapter()).setRankInterface(new RankAdapter.RankInterface() {
+            @Override
+            public void getIntent(Intent intent) {
+                mintent=intent;
+                startActivity(mintent);
+            }
+        });
 
 
     }
