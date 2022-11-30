@@ -1,10 +1,8 @@
 package com.signpe.fourrshare;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,7 +23,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
@@ -112,10 +108,10 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
         ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Glide.with(holder.itemView).load(uri).into(holder.usr_icon);
+                Glide.with(context).load(uri).into(holder.usr_icon);
             }
         });
-        Glide.with(holder.itemView).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
+        Glide.with(context).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
         holder.likeButton.setImageResource(R.drawable.clickheart);
         holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
         holder.usr_nickname.setText(String.valueOf(imageDTOs.get(position).getUserNickname()));

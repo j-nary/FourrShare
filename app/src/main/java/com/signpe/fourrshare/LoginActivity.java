@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -56,15 +57,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean registerValidationCheck(EditText id, EditText pw){
         if (id.getText().toString().length() ==0 || pw.getText().toString().length() ==0 ){
-            Toast.makeText(getApplicationContext(),"비어 있는 항목이 있습니다.",Toast.LENGTH_SHORT).show();
+            DynamicToast.makeWarning(getApplicationContext(),"비어 있는 항목이 있습니다.").show();
 
         }
         else if(!isEmailValid(id.getText().toString())){
-            Toast.makeText(this, "이메일의 형식으로 입력하셔야 합니다.", Toast.LENGTH_SHORT).show();
+            DynamicToast.makeWarning(getApplicationContext(),"이메일의 형식으로 입력하셔야 합니다.").show();
 
         }
         else if((pw.getText().toString().length() < 6)){
-            Toast.makeText(this, "비밀번호는 6글자 이상이여야 합니다.", Toast.LENGTH_SHORT).show();
+            DynamicToast.makeWarning(getApplicationContext(),"비밀번호는 6글자 이상이여야 합니다.").show();
         }
         else{ return true;}
         return false;
@@ -86,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("superdroid", "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "로그인에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                            DynamicToast.makeError(LoginActivity.this,"로그인에 실패하였습니다.").show();
                         }
                     }
                 });
@@ -97,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
+            finish();
             startActivity(new Intent(getApplicationContext(),GalleryActivity.class));
         }
     }

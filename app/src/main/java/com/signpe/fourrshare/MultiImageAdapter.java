@@ -7,8 +7,6 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -25,11 +23,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import com.signpe.fourrshare.model.ImageDTO;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder>{
     private FirebaseFirestore firestore;
@@ -115,7 +112,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ExtensionDialog exDialog = new ExtensionDialog(holder.image.getContext(), holder.image,holder.getAdapterPosition(),imageUidList,mContext,imageDTOs.get(holder.getAdapterPosition()).getIsUpload());
+                ExtensionDialog exDialog = new ExtensionDialog(holder.image.getContext(), holder.image,holder.getAdapterPosition(),imageUidList, imageDTOs.get(holder.getAdapterPosition()).getIsUpload());
                 exDialog.setDialogListener(new ExtensionDialog.CustomDialogListener() {
                     @Override
                     public void onFresh(int position) {
@@ -145,7 +142,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
                         }).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(mContext, "업로드 완료", Toast.LENGTH_SHORT).show();
+                                DynamicToast.makeSuccess(mContext,"업로드 완료").show();
                                 imageDTOs.get(position).setIsUpload(true);
                             }
                         });
@@ -164,7 +161,7 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
                         }).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(mContext, "업로드 취소 완료", Toast.LENGTH_SHORT).show();
+                                DynamicToast.makeSuccess(mContext,"업로드 취소 완료").show();
                                 imageDTOs.get(position).setIsUpload(false);
                             }
                         });
@@ -174,9 +171,6 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
                 exDialog.callFunction();
             }
         });
-//        Glide.with(mContext)
-//                .load(image_uri)
-//                .into(holder.image);
     }
 
     // getItemCount() - 전체 데이터 갯수 리턴.
@@ -185,13 +179,5 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
 //        return mData.size() ;
         return imageDTOs.size();
     }
-
-//    private void setAnimation(View viewToAnimate, int position) {
-//        if (position > lastPosition) {
-//            Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left);
-//            viewToAnimate.setAnimation(animation);
-//            lastPosition = position;
-//        }
-//    }
 
 }

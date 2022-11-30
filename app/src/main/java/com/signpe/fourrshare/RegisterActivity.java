@@ -19,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -51,19 +52,18 @@ public class RegisterActivity extends AppCompatActivity {
     }
     private boolean registerValidationCheck(EditText id, EditText pw, EditText check_pw){
         if (id.getText().toString().length() ==0 || pw.getText().toString().length() ==0 || check_pw.getText().toString().length() ==0){
-            Toast.makeText(getApplicationContext(),"비어 있는 항목이 있습니다.",Toast.LENGTH_SHORT).show();
+            DynamicToast.makeWarning(getApplicationContext(),"비어 있는 항목이 있습니다.").show();
 
         }
         else if(!isEmailValid(id.getText().toString())){
-            Toast.makeText(this, "이메일의 형식으로 입력하셔야 합니다.", Toast.LENGTH_SHORT).show();
-
+            DynamicToast.makeWarning(getApplicationContext(),"이메일의 형식으로 입력하셔야 합니다.").show();
         }
 
         else if (!(pw.getText().toString().equals(check_pw.getText().toString()))){
-            Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+            DynamicToast.makeWarning(getApplicationContext(),"비밀번호가 일치하지 않습니다.").show();
         }
         else if((pw.getText().toString().length() < 6)){
-            Toast.makeText(this, "비밀번호는 6글자 이상이여야 합니다.", Toast.LENGTH_SHORT).show();
+            DynamicToast.makeWarning(getApplicationContext(),"비밀번호는 6글자 이상이여야 합니다.").show();
         }
         else{ return true;}
         return false;
@@ -84,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
                             mAuth.getCurrentUser().updateProfile(profileChangeRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(getApplicationContext(),"회원가입 성공",Toast.LENGTH_SHORT).show();
+                                    DynamicToast.makeSuccess(getApplicationContext(),"회원가입에 성공하였습니다").show();
                                     Intent myintent = new Intent(getApplicationContext(),LoginActivity.class);
                                     finish();
                                     startActivity(myintent);
@@ -94,8 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(getApplicationContext(), "이미 존재하는 이메일 입니다.",
-                                    Toast.LENGTH_SHORT).show();
+                            DynamicToast.makeError(getApplicationContext(),"이미 존재하는 이메일입니다.").show();
                             Log.d("sperdorid", "failfail:success");
                         }
                     }

@@ -3,12 +3,14 @@ package com.signpe.fourrshare;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,12 +37,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import com.signpe.fourrshare.model.ImageDTO;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 
 public class GalleryActivity extends AppCompatActivity {
 
@@ -51,7 +55,6 @@ public class GalleryActivity extends AppCompatActivity {
     StorageReference storageRef = storage.getReference();
     LinearProgressIndicator linearProgressIndicator;
     private static final String TAG = "MultiImageActivity";
-    private RecyclerView.Adapter Adapter;
     private RecyclerView.LayoutManager LayoutManager;
     ArrayList<Uri> uriList = new ArrayList<>();     // 이미지의 uri를 담을 ArrayList 객체
     ArrayList<ImageDTO> imageDTOS = new ArrayList<>();
@@ -63,7 +66,6 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
-
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
          linearProgressIndicator = findViewById(R.id.linear_prog);
@@ -71,7 +73,6 @@ public class GalleryActivity extends AppCompatActivity {
 //        Toast.makeText(this, intent.getStringExtra("urls"), Toast.LENGTH_SHORT).show();
         if (!TextUtils.isEmpty(intent.getStringExtra("urls"))){
             linearProgressIndicator.setVisibility(View.VISIBLE);
-            Bitmap bitmap = null;
             Glide.with(getApplicationContext()).asBitmap().load(intent.getStringExtra("urls")).into(new CustomTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -116,14 +117,14 @@ public class GalleryActivity extends AppCompatActivity {
         linearProgressIndicator.setProgressCompat(0,true);
         linearProgressIndicator.setVisibility(View.VISIBLE);
         if(data == null){   // 어떤 이미지도 선택하지 않은 경우
-            Toast.makeText(getApplicationContext(), "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show();
+            DynamicToast.makeWarning(GalleryActivity.this,"이미지를 선택하지 않았습니다.").show();
         }
         else{   // 이미지를 하나라도 선택한 경우
                 ClipData clipData = data.getClipData();
                 Log.e("clipData", String.valueOf(clipData.getItemCount()));
 
                 if(clipData.getItemCount() > 10){   // 선택한 이미지가 11장 이상인 경우
-                    Toast.makeText(getApplicationContext(), "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG).show();
+                    DynamicToast.makeError(GalleryActivity.this,"사진은 10장까지 선택 가능합니다.").show();
                 }
                 else{   // 선택한 이미지가 1장 이상 10장 이하인 경우
                     Log.e(TAG, "multiple choice");
@@ -215,7 +216,7 @@ public class GalleryActivity extends AppCompatActivity {
                              }).addOnFailureListener(new OnFailureListener() {
                                  @Override
                                  public void onFailure(@NonNull Exception e) {
-                                     Toast.makeText(GalleryActivity.this, "업로드 실패", Toast.LENGTH_SHORT).show();
+                                     DynamicToast.makeError(GalleryActivity.this,"업로드 실패").show();
                                  }
                              });
                         }
@@ -226,76 +227,77 @@ public class GalleryActivity extends AppCompatActivity {
 
     }
 
-    private void contentUpLoad(byte[] data){ // for qr scan
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            String fileName = "user_" + sdf.format(timestamp) + 1 + "_.png";
-            StorageReference ImageRef = storageRef.child("images").child(currentUser.getUid()).child(fileName);
+        private void contentUpLoad(byte[] data){ // for qr scan
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                String fileName = "user_" + sdf.format(timestamp) + 1 + "_.png";
+                StorageReference ImageRef = storageRef.child("images").child(currentUser.getUid()).child(fileName);
 
-            UploadTask uploadTask = ImageRef.putBytes(data);
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String img_uri = uri.toString();
-                            ImageDTO dto = new ImageDTO();
-                            dto.setImageUri(img_uri);
-                            dto.setUid(currentUser.getUid());
-                            dto.setUserId(currentUser.getEmail());
-                            dto.setUserNickname(currentUser.getDisplayName());
-                            dto.setTimeStamp(sdf.format(timestamp));
-                            dto.setLikeCount(0);
-                            dto.setIsUpload(false);
-                            adapter.imageDTOs.add(dto);
-                            adapter.notifyItemInserted(adapter.imageDTOs.size()-1);
-                            adapter.notifyItemRangeChanged(adapter.imageDTOs.size()-1,adapter.imageDTOs.size());
-                            db.collection("images").add(dto).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    adapter.imageUidList.add(documentReference.getId());
-                                    linearProgressIndicator.setProgressCompat(100,true);
-                                    Handler handler =new Handler();
-                                    handler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            AlphaAnimation anim = new AlphaAnimation(1, 0);
-                                            anim.setDuration(1000);
-                                            linearProgressIndicator.setAnimation(anim);
-                                            linearProgressIndicator.startAnimation(anim);
-                                            anim.setAnimationListener(new Animation.AnimationListener() {
-                                                @Override
-                                                public void onAnimationStart(Animation animation) {
+                UploadTask uploadTask = ImageRef.putBytes(data);
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String img_uri = uri.toString();
+                                ImageDTO dto = new ImageDTO();
+                                dto.setImageUri(img_uri);
+                                dto.setUid(currentUser.getUid());
+                                dto.setUserId(currentUser.getEmail());
+                                dto.setUserNickname(currentUser.getDisplayName());
+                                dto.setTimeStamp(sdf.format(timestamp));
+                                dto.setLikeCount(0);
+                                dto.setIsUpload(false);
+                                adapter.imageDTOs.add(dto);
+                                adapter.notifyItemInserted(adapter.imageDTOs.size()-1);
+                                adapter.notifyItemRangeChanged(adapter.imageDTOs.size()-1,adapter.imageDTOs.size());
+                                db.collection("images").add(dto).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        adapter.imageUidList.add(documentReference.getId());
+                                        linearProgressIndicator.setProgressCompat(100,true);
+                                        Handler handler =new Handler();
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                AlphaAnimation anim = new AlphaAnimation(1, 0);
+                                                anim.setDuration(1000);
+                                                linearProgressIndicator.setAnimation(anim);
+                                                linearProgressIndicator.startAnimation(anim);
+                                                anim.setAnimationListener(new Animation.AnimationListener() {
+                                                    @Override
+                                                    public void onAnimationStart(Animation animation) {
 
-                                                }
+                                                    }
 
-                                                @Override
-                                                public void onAnimationEnd(Animation animation) {
-                                                    linearProgressIndicator.setVisibility(View.INVISIBLE);
-                                                }
+                                                    @Override
+                                                    public void onAnimationEnd(Animation animation) {
+                                                        linearProgressIndicator.setVisibility(View.INVISIBLE);
+                                                    }
 
-                                                @Override
-                                                public void onAnimationRepeat(Animation animation) {
+                                                    @Override
+                                                    public void onAnimationRepeat(Animation animation) {
 
-                                                }
-                                            });
-                                        }
-                                    },1000);
+                                                    }
+                                                });
+                                            }
+                                        },1000);
 
 
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(GalleryActivity.this, "업로드 실패", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    });
-//                Toast.makeText(MainActivity.this, "succes!!", Toast.LENGTH_SHORT).show();
-                }
-            });
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        DynamicToast.makeError(GalleryActivity.this,"업로드 실패").show();
+
+                                    }
+                                });
+                            }
+                        });
+    //                Toast.makeText(MainActivity.this, "succes!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
     // 네비게이션 바
     public void onClickNavigationBar(View v){

@@ -1,11 +1,8 @@
 package com.signpe.fourrshare;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +12,20 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.signpe.fourrshare.model.ImageDTO;
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 import java.util.ArrayList;
 
 public class ExtensionDialog extends AppCompatActivity {
-    private Context context;
+    private final Context context;
     private ImageView getImage;
-    private Context mContext;
     private int position;
     public ArrayList<String> imageUidList;
     private FirebaseFirestore firestore= FirebaseFirestore.getInstance();
@@ -49,12 +48,11 @@ public class ExtensionDialog extends AppCompatActivity {
         this.customDialogListener = customDialogListener;
     }
 
-    public ExtensionDialog(Context context, ImageView image, int position,ArrayList<String> imageUidList,Context mContext,boolean uploaded) {
+    public ExtensionDialog(Context context, ImageView image, int position, ArrayList<String> imageUidList, boolean uploaded) {
         this.context = context;
         getImage = image;
         this.position= position;
         this.imageUidList = imageUidList;
-        this.mContext=mContext;
         this.uploaded=uploaded;
 
     }
@@ -100,7 +98,8 @@ public class ExtensionDialog extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 customDialogListener.saveImage(getImage);
-                Toast.makeText(context, "갤러리에 저장되었습니다!", Toast.LENGTH_SHORT).show();
+                DynamicToast.make(context,"갤러리에 저장되었습니다.", AppCompatResources.getDrawable(context,R.drawable.ic_baseline_save_24),Color.parseColor("#FFFFFF"),Color.parseColor("#2F9CF4")).show();
+
                 dlg.dismiss();
             }
         });
@@ -113,7 +112,7 @@ public class ExtensionDialog extends AppCompatActivity {
                 firestore.collection("images").document(imageUidList.get(position)).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Toast.makeText(context, "삭제 완료", Toast.LENGTH_SHORT).show();
+                        DynamicToast.make(context,"삭제 완료.", AppCompatResources.getDrawable(context,R.drawable.ic_baseline_delete_24),Color.parseColor("#FFFFFF"),Color.parseColor("#F44E42")).show();
                         dlg.dismiss();
                         customDialogListener.onFresh(position);
                     }
