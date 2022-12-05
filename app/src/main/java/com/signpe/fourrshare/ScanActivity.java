@@ -57,7 +57,13 @@ public class ScanActivity extends AppCompatActivity {
             } else {
                 //Todo Class 만들어서, 각 회사별로 링크 구별 할 수 있게 해주자. 이거 실패하면 미완성 어플리케이션
                 Intent intent = new Intent(this,GalleryActivity.class);
-                intent.putExtra("urls",result.getContents());
+                  if (result.getContents().contains("3.38.179.48")){
+                      Toast.makeText(this, "http://3.38.179.48/take/"+result.getContents().substring(result.getContents().indexOf("=")+1)+".jpg", Toast.LENGTH_SHORT).show();
+                      intent.putExtra("urls", "http://3.38.179.48/take/"+result.getContents().substring(result.getContents().indexOf("=")+1)+".jpg");
+
+                  }
+
+
                 finish();
                 startActivity(intent);
 
