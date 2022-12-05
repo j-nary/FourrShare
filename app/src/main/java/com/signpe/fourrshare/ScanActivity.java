@@ -17,12 +17,10 @@ import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 public class ScanActivity extends AppCompatActivity {
     private final int REQ_CAMERA_PERMISSION = 1001;
-    ImageView myimg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        String url = "https://upload.wikimedia.org/wikipedia/ko/1/1c/T1%EB%A1%9C%EA%B3%A0.jpg";
 
 
         ActivityCompat.requestPermissions(this,
@@ -57,9 +55,7 @@ public class ScanActivity extends AppCompatActivity {
                 finish();
                 startActivity(new Intent(this,GalleryActivity.class));
             } else {
-//                Toast.makeText (this, "Scanned: " + result.getContents (), Toast.LENGTH_LONG).show ();
-//                Glide.with(getApplicationContext()).load(result.getContents()).into(myimg);
-//                Glide.with(getApplicationContext()).load(result.getContents()).into()
+                //Todo Class 만들어서, 각 회사별로 링크 구별 할 수 있게 해주자. 이거 실패하면 미완성 어플리케이션
                 Intent intent = new Intent(this,GalleryActivity.class);
                 intent.putExtra("urls",result.getContents());
                 finish();

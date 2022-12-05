@@ -43,7 +43,7 @@ public class ExtensionDialog extends AppCompatActivity {
         void cancelUpload(int position);
     }
 
-    //호출할 리스너 초기화
+    //호출할 리스너 초기화 (콜백)
     public void setDialogListener(CustomDialogListener customDialogListener){
         this.customDialogListener = customDialogListener;
     }
