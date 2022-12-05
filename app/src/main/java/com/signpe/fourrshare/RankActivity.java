@@ -89,20 +89,16 @@ public class RankActivity extends AppCompatActivity{
         if (checkLikeOrder.isChecked()){ // 체크하면 좋아요 순으로
             editor.putBoolean("state",true);
             editor.apply();
+            startActivity(new Intent(getApplicationContext(),RankActivity.class));
             finish();
-            overridePendingTransition(0,0);
-            Intent intent = getIntent();
-            startActivity(intent);
             overridePendingTransition(0,0);
 
         }
         else{
             editor.putBoolean("state",false);
             editor.apply();
+            startActivity(new Intent(getApplicationContext(),RankActivity.class));
             finish();
-            overridePendingTransition(0,0);
-            Intent intent = getIntent();
-            startActivity(intent);
             overridePendingTransition(0,0);
 
 
