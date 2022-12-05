@@ -207,7 +207,6 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
 
             }
         });
-        setAnimation(holder.imageView, position);
     }
 
     //Item 개수 반환
@@ -217,12 +216,6 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     }
 
     //View 나올 때 Animation 주기
-    private void setAnimation(View viewToAnimate, int position) {
-        if (position > lastPosition) {
-            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
-            viewToAnimate.setAnimation(animation);
-            lastPosition = position;
-        }
-    }
+
 
 }
