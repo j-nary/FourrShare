@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/background">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -18,7 +19,6 @@
             android:layout_width="60dp"
             android:layout_height="60dp"/>
 
-
         <TextView
             android:id="@+id/feed_author"
             android:layout_width="wrap_content"
@@ -26,7 +26,9 @@
             android:textSize="35dp"
             android:text="/name 님의 피드"
             android:textStyle="bold"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/bitbit"/>
     </LinearLayout>
 
 
@@ -46,8 +48,9 @@
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
                 android:text="/name 님이 받은 총 "
-                android:textStyle="bold"
-                android:layout_marginLeft="10dp"/>
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/bitbit"/>
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -61,7 +64,9 @@
                 android:text="hearts"
                 android:layout_marginLeft="5dp"
                 android:layout_gravity="center_vertical"
-                android:textSize="20dp"/>
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/bitbit"/>
 
 
         </LinearLayout>
