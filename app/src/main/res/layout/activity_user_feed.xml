@@ -23,9 +23,8 @@
             android:id="@+id/feed_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="35dp"
+            android:textSize="37dp"
             android:text="/name 님의 피드"
-            android:textStyle="bold"
             android:layout_margin="10dp"
             android:textColor="@color/white"
             android:fontFamily="@font/bitbit"/>
