@@ -57,12 +57,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/getImage" />
 
+
     <!--하단바-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="65dp"
         android:orientation="horizontal"
-        android:background="#9ECADB">
+        android:background="#083779">
         <ImageView
             android:id="@+id/galleryClickButton"
             android:layout_width="0dp"
@@ -71,7 +72,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/galleryclick"
-            app:tint="#040007"/>
+            app:tint="#FBFBFB"/>
         <ImageView
             android:id="@+id/rankClickButton"
             android:layout_width="0dp"
@@ -80,7 +81,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/rank"
-            app:tint="#656565"/>
+            app:tint="#FBFBFB"/>
         <ImageView
             android:id="@+id/scanClickButton"
             android:layout_width="0dp"
@@ -89,7 +90,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/scan"
-            app:tint="#656565"/>
+            app:tint="#FBFBFB"/>
         <ImageView
             android:id="@+id/scrapClickButton"
             android:layout_width="0dp"
@@ -98,7 +99,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/scrap"
-            app:tint="#656565"/>
+            app:tint="#FBFBFB"/>
         <ImageView
             android:id="@+id/myinfoClickButton"
             android:layout_width="0dp"
@@ -107,8 +108,7 @@
             android:layout_weight="1"
             android:onClick="onClickNavigationBar"
             android:src="@drawable/myinfo"
-            app:tint="#656565"/>
+            app:tint="#FBFBFB"/>
     </LinearLayout>
-
 
 </LinearLayout>
