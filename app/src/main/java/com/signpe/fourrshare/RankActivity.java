@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 
@@ -100,12 +101,21 @@ public class RankActivity extends AppCompatActivity{
 
             @Override
             public int compare(ImageInfo o1, ImageInfo o2) {
-                return o1.getImageDTO().getTimeStamp().compareTo(o2.getImageDTO().getTimeStamp());
+                return (o2.getImageDTO().getTimeStamp()).compareTo(o1.getImageDTO().getTimeStamp());
             }
         } ;
         CheckBox checkLikeOrder = findViewById(R.id.like_order);
+        ArrayList<ImageInfo> temp = new ArrayList<>(rankAdapter.imageInfos);
+        Collections.copy(temp,rankAdapter.imageInfos);
+
         if (checkLikeOrder.isChecked()){ // 체크하면 좋아요 순으로
             Collections.sort(rankAdapter.imageInfos,cmpAsc);
+//            for (int i=0; i< rankAdapter.imageInfos.size() ; i++){
+//                int toPos = rankAdapter.imageInfos.indexOf(temp.get(i));
+//
+//                rankAdapter.notifyItemMoved(i,toPos);
+//
+//            }
             rankAdapter.notifyItemRangeChanged(0,rankAdapter.imageInfos.size());
 
 
@@ -119,6 +129,15 @@ public class RankActivity extends AppCompatActivity{
         else{
             Collections.sort(rankAdapter.imageInfos,cmpAscTime);
             rankAdapter.notifyItemRangeChanged(0,rankAdapter.imageInfos.size());
+
+//            for (int i=0; i< rankAdapter.imageInfos.size() ; i++){
+//                int toPos = rankAdapter.imageInfos.indexOf(temp.get(i));
+//                rankAdapter.notifyItemMoved(i,toPos);
+//
+//
+//            }
+
+
             editor.putBoolean("state",false);
             editor.apply();
 //            startActivity(new Intent(getApplicationContext(),RankActivity.class));

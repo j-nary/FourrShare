@@ -179,6 +179,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
                         if(imageDTO.getLikedPeople().containsKey(uid)){
                             imageDTO.setLikeCount(imageDTO.getLikeCount() - 1);
                             imageDTO.getLikedPeople().remove(uid);
+                            imageInfos.get(position).setImageDTO(imageDTO);
 
                             firestore.collection("image").whereEqualTo("likedPeople",like).addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
@@ -195,6 +196,8 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
                         else{
                             imageDTO.setLikeCount(imageDTO.getLikeCount()+1);
                             imageDTO.getLikedPeople().put(uid,true);
+                            imageInfos.get(position).setImageDTO(imageDTO);
+
                             firestore.collection("images").whereEqualTo("likedPeople",like).addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
