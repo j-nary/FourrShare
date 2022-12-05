@@ -2,42 +2,78 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9ECADB"
+    android:background="@color/white"
     android:orientation="vertical">
 
+    <ImageView
+        android:layout_marginTop="30dp"
+        android:layout_width="329dp"
+        android:layout_height="250dp"
+        android:src="@mipmap/ic_main"
+        android:layout_gravity="center"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="30dp"/>
     <EditText
         android:id="@+id/input_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
-        android:hint="이메일" />
-
+        android:hint="이메일"
+        android:fontFamily="@font/bitbit"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
     <EditText
         android:id="@+id/input_nickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textNoSuggestions"
         android:maxLength="15"
-        android:hint="닉네임"/>
-
+        android:hint="닉네임"
+        android:fontFamily="@font/bitbit"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
     <EditText
         android:id="@+id/input_pw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:hint="비밀번호" />
+        android:hint="비밀번호"
+        android:fontFamily="@font/bitbit"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
     <EditText
         android:id="@+id/input_check_pw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:hint="비밀번호 확인" />
+        android:hint="비밀번호 확인"
+        android:fontFamily="@font/bitbit"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="30dp"/>
 
     <Button
         android:id="@+id/register_button"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:text="가입하기" />
+        android:layout_gravity="center"
+        android:backgroundTint="#083779"
+        android:fontFamily="@font/bitbit"
+        android:text="가입하기"
+        android:textColor="@color/white"
+        android:textSize="30dp" />
 
 </LinearLayout>
