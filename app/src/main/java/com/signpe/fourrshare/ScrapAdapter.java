@@ -46,13 +46,14 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
     private boolean order;
     private String state;
     private FirebaseFirestore firestore;
+    public ArrayList<ImageInfo> imageInfos;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
-    public ScrapAdapter(Context context, ArrayList<ImageDTO> imageDTOS) {
-        this.imageDTOs = imageDTOS;
+    public ScrapAdapter(Context context, ArrayList<ImageInfo> imageInfos) {
+        this.imageInfos = imageInfos;
         this.context = context;
 
         firestore = FirebaseFirestore.getInstance();
@@ -67,7 +68,8 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
                         try{
                             for(DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
                                 ImageDTO item = snapshot.toObject(ImageDTO.class);
-                                imageDTOS.add(item);
+
+                                imageInfos.add(new ImageInfo(item,snapshot.getId()));
                                 imageUidList.add(snapshot.getId());
                             }
                         }
@@ -114,23 +116,23 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ScrapAdapter.ViewHolder holder,@SuppressLint("RecyclerView") int position) {
 
-        StorageReference ImageRef = storageRef.child("profile").child(imageDTOs.get(position).getUid()).child(imageDTOs.get(position).getUid()+".png");
+        StorageReference ImageRef = storageRef.child("profile").child(imageInfos.get(position).getImageDTO().getUid()).child(imageInfos.get(position).getImageDTO().getUid()+".png");
         ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Glide.with(context).load(uri).into(holder.usr_icon);
             }
         });
-        Glide.with(context).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
+        Glide.with(context).load(imageInfos.get(position).getImageDTO().getImageUri()).into(holder.imageView);
         holder.likeButton.setImageResource(R.drawable.clickheart);
-        holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
-        holder.usr_nickname.setText(String.valueOf(imageDTOs.get(position).getUserNickname()));
+        holder.textView.setText(String.valueOf(imageInfos.get(position).getImageDTO().getLikeCount()) );
+        holder.usr_nickname.setText(String.valueOf(imageInfos.get(position).getImageDTO().getUserNickname()));
         holder.usr_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent= new Intent(context,UserFeedActivity.class);
                 intent.putExtra("nickName",holder.usr_nickname.getText().toString());
-                intent.putExtra("uid",imageDTOs.get(position).getUid());
+                intent.putExtra("uid",imageInfos.get(position).getImageDTO().getUid());
                 scrapInterface.getIntent(intent);
             }
         });
@@ -139,7 +141,7 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
             public void onClick(View v) {
                 Intent intent= new Intent(context,UserFeedActivity.class);
                 intent.putExtra("nickName",holder.usr_nickname.getText().toString());
-                intent.putExtra("uid",imageDTOs.get(position).getUid());
+                intent.putExtra("uid",imageInfos.get(position).getImageDTO().getUid());
                 scrapInterface.getIntent(intent);
 
             }
@@ -151,7 +153,7 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 Map<String,Boolean> like = new HashMap<>();
                 like.put(uid,true);
-                DocumentReference tsdoc = firestore.collection("images").document(imageUidList.get(position));
+                DocumentReference tsdoc = firestore.collection("images").document(imageInfos.get(position).getImguid());
                 firestore.runTransaction(new Transaction.Function<Void>() {
                     @Nullable
                     @Override
@@ -203,7 +205,7 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
     //Item 개수 반환
     @Override
     public int getItemCount() {
-        return imageDTOs.size();
+        return imageInfos.size();
     }
 
     //View 나올 때 Animation 주기

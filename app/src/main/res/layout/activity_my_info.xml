@@ -63,10 +63,10 @@
 
     <Button
         android:id="@+id/logout_button"
+        android:backgroundTint="#1D4F95"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textColor="@color/black"
         android:text="Logout"
         android:layout_marginTop="100dp"/>
 
