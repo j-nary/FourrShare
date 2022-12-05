@@ -10,18 +10,18 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="200dp"
-        android:textSize="45dp"
+        android:textSize="50dp"
         android:textColor="#FFFFFFFF"
-        android:textStyle="bold"
-        android:text="포르쉐"/>
+        android:text="포르쉐"
+        android:fontFamily="@font/bitbit"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textSize="25dp"
         android:textColor="#FFFFFFFF"
-        android:textStyle="bold"
-        android:text="Four,Rank,Share"/>
+        android:text="Four,Rank,Share"
+        android:fontFamily="@font/bitbit"/>
 
     <EditText
         android:id="@+id/login_input_id"
@@ -67,7 +67,9 @@
         android:textColorHint="@color/white"
         android:stateListAnimator="@null"
         android:text="@string/register"
-        android:textColor="@color/black" />
+        android:textSize="20dp"
+        android:fontFamily="@font/bitbit"
+        android:textColor="@color/white" />
 
 
 
