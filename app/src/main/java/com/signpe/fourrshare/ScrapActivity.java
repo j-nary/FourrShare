@@ -21,6 +21,7 @@ public class ScrapActivity extends AppCompatActivity {
     private RecyclerView scrapRecyclerView;
     private RecyclerView.Adapter scrapAdapter;
     private RecyclerView.LayoutManager scrapLayoutManager;
+    Intent mintent;
 
     //FireBase 관련 선언. 건들면 어플 죽어요 !
     ArrayList<ImageDTO> imageDTOS = new ArrayList<>();
@@ -45,6 +46,14 @@ public class ScrapActivity extends AppCompatActivity {
 
         scrapAdapter = new ScrapAdapter(getApplicationContext(),imageDTOS);
         scrapRecyclerView.setAdapter(scrapAdapter);
+
+        ((ScrapAdapter)scrapRecyclerView.getAdapter()).setScrapInterface(new ScrapAdapter.ScrapInterface() {
+            @Override
+            public void getIntent(Intent intent) {
+                mintent=intent;
+                startActivity(mintent);
+            }
+        });
 }
 
     // 네비게이션 바

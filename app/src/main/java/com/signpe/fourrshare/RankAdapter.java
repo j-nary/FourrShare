@@ -137,6 +137,15 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
 
         holder.usr_nickname.setText(imageInfos.get(position).getImageDTO().getUserNickname());
 
+        holder.usr_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(context,UserFeedActivity.class);
+                intent.putExtra("nickName",holder.usr_nickname.getText().toString());
+                intent.putExtra("uid",imageInfos.get(position).getImageDTO().getUid());
+                rankInterface.getIntent(intent);
+            }
+        });
         holder.usr_nickname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

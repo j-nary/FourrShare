@@ -2,6 +2,7 @@ package com.signpe.fourrshare;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> {
+
+    interface ScrapInterface{
+        void getIntent(Intent intent);
+    }
+
     private Context context;
+    ScrapInterface scrapInterface;
     private int lastPosition = -1;
     private boolean order;
     private String state;
@@ -90,6 +97,9 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
         }
     }
 
+    public void setScrapInterface(ScrapInterface scrapInterface) { this.scrapInterface=scrapInterface;}
+
+
     //새로운 뷰 생성
     @NonNull
     @Override
@@ -115,6 +125,26 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
         holder.likeButton.setImageResource(R.drawable.clickheart);
         holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
         holder.usr_nickname.setText(String.valueOf(imageDTOs.get(position).getUserNickname()));
+        holder.usr_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(context,UserFeedActivity.class);
+                intent.putExtra("nickName",holder.usr_nickname.getText().toString());
+                intent.putExtra("uid",imageDTOs.get(position).getUid());
+                scrapInterface.getIntent(intent);
+            }
+        });
+        holder.usr_nickname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(context,UserFeedActivity.class);
+                intent.putExtra("nickName",holder.usr_nickname.getText().toString());
+                intent.putExtra("uid",imageDTOs.get(position).getUid());
+                scrapInterface.getIntent(intent);
+
+            }
+        });
+
         holder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
