@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9ECADB"
+    android:background="#083779"
 
     android:orientation="vertical"  >
     <TextView
@@ -11,7 +11,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="200dp"
         android:textSize="45dp"
-        android:textColor="@color/black"
+        android:textColor="#FFFFFFFF"
         android:textStyle="bold"
         android:text="포르쉐"/>
     <TextView
@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textSize="25dp"
+        android:textColor="#FFFFFFFF"
         android:textStyle="bold"
         android:text="Four,Rank,Share"/>
 

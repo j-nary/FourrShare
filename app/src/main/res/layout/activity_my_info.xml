@@ -31,8 +31,6 @@
                 android:maxWidth="25dp"
                 android:layout_marginTop="30dp"/>
 
-
-
         </FrameLayout>
 
 
@@ -61,7 +59,7 @@
         android:id="@+id/save_name"
         android:layout_width="63dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="#8ECBDA"
+        android:backgroundTint="#1D4F95"
         android:text="저장"
         android:onClick="onClickChangeName"/>
 
@@ -82,9 +80,9 @@
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="65dp"
             android:orientation="horizontal"
-            android:background="#9ECADB"
+            android:background="#083779"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true">
             <ImageView
@@ -95,7 +93,7 @@
                 android:layout_weight="1"
                 android:onClick="onClickNavigationBar"
                 android:src="@drawable/gallery"
-                app:tint="#656565"/>
+                app:tint="#FBFBFB"/>
             <ImageView
                 android:id="@+id/rankClickButton"
                 android:layout_width="0dp"
@@ -104,7 +102,7 @@
                 android:layout_weight="1"
                 android:onClick="onClickNavigationBar"
                 android:src="@drawable/rank"
-                app:tint="#656565"/>
+                app:tint="#FBFBFB"/>
             <ImageView
                 android:id="@+id/scanClickButton"
                 android:layout_width="0dp"
@@ -113,7 +111,7 @@
                 android:layout_weight="1"
                 android:onClick="onClickNavigationBar"
                 android:src="@drawable/scan"
-                app:tint="#656565"/>
+                app:tint="#FBFBFB"/>
             <ImageView
                 android:id="@+id/scrapClickButton"
                 android:layout_width="0dp"
@@ -122,7 +120,7 @@
                 android:layout_weight="1"
                 android:onClick="onClickNavigationBar"
                 android:src="@drawable/scrap"
-                app:tint="#656565"/>
+                app:tint="#FBFBFB"/>
             <ImageView
                 android:id="@+id/myinfoClickButton"
                 android:layout_width="0dp"
@@ -131,7 +129,8 @@
                 android:layout_weight="1"
                 android:onClick="onClickNavigationBar"
                 android:src="@drawable/myinfoclick"
-                />
+                app:tint="#FBFBFB"/>
+
         </LinearLayout>
     </RelativeLayout>
 
