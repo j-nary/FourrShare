@@ -20,10 +20,12 @@ import com.google.firebase.storage.StorageReference;
 import com.signpe.fourrshare.model.ImageDTO;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class RankActivity extends AppCompatActivity{
     public RecyclerView rankRecyclerView;
-    private RecyclerView.Adapter rankAdapter;
+    private RankAdapter rankAdapter;
     private RecyclerView.LayoutManager rankLayoutManager;
 
     Intent mintent;
@@ -85,21 +87,41 @@ public class RankActivity extends AppCompatActivity{
 
     // 좋아요 순 정렬
     public void onClickLikeOrder(View v){
+        Comparator<ImageDTO> cmpAsc = new Comparator<ImageDTO>() {
+
+            @Override
+            public int compare(ImageDTO o1, ImageDTO o2) {
+                return Integer.compare(o2.getLikeCount(), o1.getLikeCount());
+            }
+        } ;
+
+        Comparator<ImageDTO> cmpAscTime = new Comparator<ImageDTO>() {
+
+            @Override
+            public int compare(ImageDTO o1, ImageDTO o2) {
+                return o1.getTimeStamp().compareTo(o2.getTimeStamp());
+            }
+        } ;
         CheckBox checkLikeOrder = findViewById(R.id.like_order);
         if (checkLikeOrder.isChecked()){ // 체크하면 좋아요 순으로
+            Collections.sort(rankAdapter.imageDTOs,cmpAsc);
+            rankAdapter.notifyItemRangeChanged(0,rankAdapter.imageDTOs.size());
+
             editor.putBoolean("state",true);
             editor.apply();
-            startActivity(new Intent(getApplicationContext(),RankActivity.class));
-            finish();
-            overridePendingTransition(0,0);
+//            startActivity(new Intent(getApplicationContext(),RankActivity.class));
+//            finish();
+//            overridePendingTransition(0,0);
 
         }
         else{
+            Collections.sort(rankAdapter.imageDTOs,cmpAscTime);
+            rankAdapter.notifyItemRangeChanged(0,rankAdapter.imageDTOs.size());
             editor.putBoolean("state",false);
             editor.apply();
-            startActivity(new Intent(getApplicationContext(),RankActivity.class));
-            finish();
-            overridePendingTransition(0,0);
+//            startActivity(new Intent(getApplicationContext(),RankActivity.class));
+//            finish();
+//            overridePendingTransition(0,0);
 
 
         }

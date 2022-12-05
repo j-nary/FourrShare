@@ -50,7 +50,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
 
-    ArrayList<ImageDTO> imageDTOs;
+    public ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
     public RankAdapter(Context context,ArrayList<ImageDTO> imageDTOS,boolean order) {

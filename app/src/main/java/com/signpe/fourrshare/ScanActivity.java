@@ -51,6 +51,7 @@ public class ScanActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult (requestCode, resultCode, data);
         if (result != null) {
+            String urls=   result.getContents();
             if (result.getContents () == null) {
                 finish();
                 startActivity(new Intent(this,GalleryActivity.class));
@@ -58,8 +59,11 @@ public class ScanActivity extends AppCompatActivity {
                 //Todo Class 만들어서, 각 회사별로 링크 구별 할 수 있게 해주자. 이거 실패하면 미완성 어플리케이션
                 Intent intent = new Intent(this,GalleryActivity.class);
                   if (result.getContents().contains("3.38.179.48")){
-                      Toast.makeText(this, "http://3.38.179.48/take/"+result.getContents().substring(result.getContents().indexOf("=")+1)+".jpg", Toast.LENGTH_SHORT).show();
                       intent.putExtra("urls", "http://3.38.179.48/take/"+result.getContents().substring(result.getContents().indexOf("=")+1)+".jpg");
+
+                  }
+                  else if (result.getContents().contains("lifejuin")){
+                     intent.putExtra("urls",urls.substring(0,urls.length()-10)+"image.jpg");
 
                   }
 

@@ -16,7 +16,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 app:indicatorSize="240dp"
-                app:indicatorColor="@color/material_dynamic_primary50"
+                app:indicatorColor="#FF9200"
                 android:layout_marginTop="30dp"
                 android:visibility="invisible"
                 android:layout_gravity="center"

@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:indeterminate="true"
-        app:indicatorColor="#128BFF"
+        app:indicatorColor="#FFFFFF"
         android:visibility="invisible"
         android:layout_marginRight="10dp"/>
 
