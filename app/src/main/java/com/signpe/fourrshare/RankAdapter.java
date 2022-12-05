@@ -49,14 +49,14 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     private FirebaseFirestore firestore;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
-
+    public ArrayList<ImageInfo> imageInfos;
     public ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
-    public RankAdapter(Context context,ArrayList<ImageDTO> imageDTOS,boolean order) {
+    public RankAdapter(Context context,ArrayList<ImageInfo> imageInfos,boolean order) {
 
         this.context = context;
-        this.imageDTOs=imageDTOS;
+        this.imageInfos=imageInfos;
         this.order=order;
 
         if (order){
@@ -78,7 +78,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
                         try{
                             for(DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
                                 ImageDTO item = snapshot.toObject(ImageDTO.class);
-                                imageDTOS.add(item);
+                                imageInfos.add(new ImageInfo(item,snapshot.getId()));
                                 imageUidList.add(snapshot.getId());
                             }
                         }
@@ -126,8 +126,8 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RankAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-        Glide.with(context).load(imageDTOs.get(position).getImageUri()).into(holder.imageView);
-        StorageReference ImageRef = storageRef.child("profile").child(imageDTOs.get(position).getUid()).child(imageDTOs.get(position).getUid()+".png");
+        Glide.with(context).load(imageInfos.get(position).getImageDTO().getImageUri()).into(holder.imageView);
+        StorageReference ImageRef = storageRef.child("profile").child(imageInfos.get(position).getImageDTO().getUid()).child(imageInfos.get(position).getImageDTO().getUid()+".png");
         ImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -135,33 +135,33 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
             }
         });
 
-        holder.usr_nickname.setText(imageDTOs.get(position).getUserNickname());
+        holder.usr_nickname.setText(imageInfos.get(position).getImageDTO().getUserNickname());
 
         holder.usr_nickname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent= new Intent(context,UserFeedActivity.class);
                 intent.putExtra("nickName",holder.usr_nickname.getText().toString());
-                intent.putExtra("uid",imageDTOs.get(position).getUid());
+                intent.putExtra("uid",imageInfos.get(position).getImageDTO().getUid());
                 rankInterface.getIntent(intent);
 
             }
         });
 
-        if(imageDTOs.get(position).getLikedPeople().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+        if(imageInfos.get(position).getImageDTO().getLikedPeople().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             holder.likeButton.setImageResource(R.drawable.clickheart);
         }
         else {
             holder.likeButton.setImageResource(R.drawable.nonclickheart);
         }
-        holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
+        holder.textView.setText(String.valueOf(imageInfos.get(position).getImageDTO().getLikeCount()) );
         holder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 Map<String,Boolean> like = new HashMap<>();
                 like.put(uid,true);
-                DocumentReference tsdoc = firestore.collection("images").document(imageUidList.get(position));
+                DocumentReference tsdoc = firestore.collection("images").document(imageInfos.get(position).getImguid());
                 firestore.runTransaction(new Transaction.Function<Void>() {
                     @Nullable
                     @Override
@@ -180,7 +180,6 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
                                         return ;
                                     }
 
-                                    notifyDataSetChanged();
                                 }
                             });
                         }
@@ -198,6 +197,8 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
                                     notifyDataSetChanged();
                                 }
                             });
+//                            notifyDataSetChanged();
+
                         }
 
                         transaction.set(tsdoc,imageDTO);
@@ -212,7 +213,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     //Item 개수 반환
     @Override //1
     public int getItemCount() {
-        return imageDTOs.size();
+        return imageInfos.size();
     }
 
     //View 나올 때 Animation 주기

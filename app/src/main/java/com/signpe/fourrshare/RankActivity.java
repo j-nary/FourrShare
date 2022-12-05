@@ -34,6 +34,7 @@ public class RankActivity extends AppCompatActivity{
 
     //FireBase 관련 선언. 건들면 어플 죽어요 !
     ArrayList<ImageDTO> imageDTOS = new ArrayList<>();
+    ArrayList<ImageInfo> imageInfos = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -67,7 +68,7 @@ public class RankActivity extends AppCompatActivity{
         rankLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rankRecyclerView.setLayoutManager(rankLayoutManager);
 
-        rankAdapter = new RankAdapter(getApplicationContext(), imageDTOS, sharedpreferences.getBoolean("state",false));
+        rankAdapter = new RankAdapter(getApplicationContext(), imageInfos, sharedpreferences.getBoolean("state",false));
         rankRecyclerView.setAdapter(rankAdapter);
         ((RankAdapter)rankRecyclerView.getAdapter()).setRankInterface(new RankAdapter.RankInterface() {
             @Override
@@ -87,25 +88,26 @@ public class RankActivity extends AppCompatActivity{
 
     // 좋아요 순 정렬
     public void onClickLikeOrder(View v){
-        Comparator<ImageDTO> cmpAsc = new Comparator<ImageDTO>() {
+        Comparator<ImageInfo> cmpAsc = new Comparator<ImageInfo>() {
 
             @Override
-            public int compare(ImageDTO o1, ImageDTO o2) {
-                return Integer.compare(o2.getLikeCount(), o1.getLikeCount());
+            public int compare(ImageInfo o1, ImageInfo o2) {
+                return Integer.compare(o2.getImageDTO().getLikeCount(), o1.getImageDTO().getLikeCount());
             }
         } ;
 
-        Comparator<ImageDTO> cmpAscTime = new Comparator<ImageDTO>() {
+        Comparator<ImageInfo> cmpAscTime = new Comparator<ImageInfo>() {
 
             @Override
-            public int compare(ImageDTO o1, ImageDTO o2) {
-                return o1.getTimeStamp().compareTo(o2.getTimeStamp());
+            public int compare(ImageInfo o1, ImageInfo o2) {
+                return o1.getImageDTO().getTimeStamp().compareTo(o2.getImageDTO().getTimeStamp());
             }
         } ;
         CheckBox checkLikeOrder = findViewById(R.id.like_order);
         if (checkLikeOrder.isChecked()){ // 체크하면 좋아요 순으로
-            Collections.sort(rankAdapter.imageDTOs,cmpAsc);
-            rankAdapter.notifyItemRangeChanged(0,rankAdapter.imageDTOs.size());
+            Collections.sort(rankAdapter.imageInfos,cmpAsc);
+//            rankAdapter.notifyItemRangeChanged(0,rankAdapter.imageInfos.size());
+
 
             editor.putBoolean("state",true);
             editor.apply();
@@ -115,8 +117,8 @@ public class RankActivity extends AppCompatActivity{
 
         }
         else{
-            Collections.sort(rankAdapter.imageDTOs,cmpAscTime);
-            rankAdapter.notifyItemRangeChanged(0,rankAdapter.imageDTOs.size());
+            Collections.sort(rankAdapter.imageInfos,cmpAscTime);
+            rankAdapter.notifyItemRangeChanged(0,rankAdapter.imageInfos.size());
             editor.putBoolean("state",false);
             editor.apply();
 //            startActivity(new Intent(getApplicationContext(),RankActivity.class));
