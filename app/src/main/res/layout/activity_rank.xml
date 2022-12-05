@@ -3,14 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/background">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="45dp"
+        android:textColor="@color/white"
         android:text="이달의 포즈왕은?"
-        android:textStyle="bold"
+        android:fontFamily="@font/bitbit"
         android:layout_margin="10dp"/>
 
     <LinearLayout
@@ -25,7 +27,8 @@
             android:textSize="30dp"
             android:text="four, rank, share"
             android:textStyle="bold"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"/>
 
         <CheckBox
             android:id="@+id/like_order"
@@ -33,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="70dp"
             android:text="좋아요 순"
+            android:textColor="@color/white"
             android:onClick="onClickLikeOrder"/>
     </LinearLayout>
 
