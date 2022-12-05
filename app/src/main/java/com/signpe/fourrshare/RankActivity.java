@@ -106,7 +106,7 @@ public class RankActivity extends AppCompatActivity{
         CheckBox checkLikeOrder = findViewById(R.id.like_order);
         if (checkLikeOrder.isChecked()){ // 체크하면 좋아요 순으로
             Collections.sort(rankAdapter.imageInfos,cmpAsc);
-//            rankAdapter.notifyItemRangeChanged(0,rankAdapter.imageInfos.size());
+            rankAdapter.notifyItemRangeChanged(0,rankAdapter.imageInfos.size());
 
 
             editor.putBoolean("state",true);
