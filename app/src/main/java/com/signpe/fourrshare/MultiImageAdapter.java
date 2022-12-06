@@ -81,8 +81,6 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
 
         ViewHolder(View itemView) {
             super(itemView) ;
-
-
             // 뷰 객체에 대한 참조.
             image = itemView.findViewById(R.id.image);
         }

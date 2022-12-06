@@ -51,6 +51,9 @@ public class RankActivity extends AppCompatActivity{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rank);
+        getIntent().setAction("Already created");
+
+
         sharedpreferences = getSharedPreferences("checkstate", Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
         CheckBox checkLikeOrder = findViewById(R.id.like_order);
@@ -147,7 +150,26 @@ public class RankActivity extends AppCompatActivity{
 
         }
     }
+    @Override
+    protected void onResume() {
+        Log.v("Example", "onResume");
 
+        String action = getIntent().getAction();
+        // Prevent endless loop by adding a unique action, don't restart if action is present
+        if(action == null || !action.equals("Already created")) {
+            Log.v("Example", "Force restart");
+            Intent intent = new Intent(this, RankActivity.class);
+            startActivity(intent);
+
+            finish();
+            overridePendingTransition(0,0);
+        }
+        // Remove the unique action so the next time onResume is called it will restart
+        else
+            getIntent().setAction(null);
+
+        super.onResume();
+    }
 
 
     // 네비게이션 바
