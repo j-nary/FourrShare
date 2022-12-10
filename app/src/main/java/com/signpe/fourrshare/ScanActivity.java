@@ -66,6 +66,11 @@ public class ScanActivity extends AppCompatActivity {
                      intent.putExtra("urls",urls.substring(0,urls.length()-10)+"image.jpg");
 
                   }
+                  else if (result.getContents().contains("photograyfc")){
+                      String uniqueQR = result.getContents().substring(result.getContents().indexOf("=")+1);
+                      String photograyUrl = "https://photograyfc-event.shop/api/download.php?qrcode="+uniqueQR+"&type=P";
+                      intent.putExtra("urls", photograyUrl);
+                  }
 
 
                 finish();

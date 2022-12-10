@@ -105,10 +105,6 @@ public class UserFeedAdapter extends RecyclerView.Adapter<UserFeedAdapter.ViewHo
             imageView = (ImageView) view.findViewById(R.id.image_view);
             likeButton = (ImageView) view.findViewById(R.id.like_button);
             textView = (TextView) view.findViewById(R.id.text_view);
-            usr_nickname = view.findViewById(R.id.usr_nickname);
-            usr_icon = view.findViewById(R.id.view_profile_image);
-            usr_nickname.setVisibility(View.GONE);
-            usr_icon.setVisibility(View.GONE);
         }
     }
 
@@ -116,7 +112,7 @@ public class UserFeedAdapter extends RecyclerView.Adapter<UserFeedAdapter.ViewHo
     @NonNull
     @Override
     public UserFeedAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cardview, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feed, parent,false);
         UserFeedAdapter.ViewHolder viewHolder = new UserFeedAdapter.ViewHolder(view);
         return viewHolder;
     }
@@ -129,17 +125,33 @@ public class UserFeedAdapter extends RecyclerView.Adapter<UserFeedAdapter.ViewHo
 
         if(imageDTOs.get(position).getLikedPeople().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             holder.likeButton.setImageResource(R.drawable.clickheart);
+            holder.likeButton.setTag(R.drawable.clickheart);
         }
         else {
             holder.likeButton.setImageResource(R.drawable.nonclickheart);
+            holder.likeButton.setTag(R.drawable.nonclickheart);
         }
         holder.textView.setText(String.valueOf(imageDTOs.get(position).getLikeCount()) );
 
-
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BigImageDialog dialog = new BigImageDialog(holder.imageView.getContext(),holder.imageView);
+                dialog.callFunction();
+            }
+        });
 
         holder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if ((int) (holder.likeButton.getTag()) == R.drawable.clickheart){
+                    holder.likeButton.setImageResource(R.drawable.nonclickheart);
+                    holder.textView.setText(String.valueOf(Integer.parseInt(holder.textView.getText().toString())-1));
+                } else{
+                    holder.likeButton.setImageResource(R.drawable.clickheart);
+                    holder.textView.setText(String.valueOf(Integer.parseInt(holder.textView.getText().toString())+1));
+                }
+
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 Map<String,Boolean> like = new HashMap<>();
                 like.put(uid,true);
@@ -158,6 +170,7 @@ public class UserFeedAdapter extends RecyclerView.Adapter<UserFeedAdapter.ViewHo
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                                     if (value!=null){
                                         holder.likeButton.setImageResource(R.drawable.nonclickheart);
+                                        holder.likeButton.setTag(R.drawable.nonclickheart);
                                         holder.textView.setText(String.valueOf(imageDTO.getLikeCount()));
                                         return ;
                                     }
@@ -174,7 +187,9 @@ public class UserFeedAdapter extends RecyclerView.Adapter<UserFeedAdapter.ViewHo
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                                     if (value!=null){
                                         holder.likeButton.setImageResource(R.drawable.clickheart);
+                                        holder.likeButton.setTag(R.drawable.clickheart);
                                         holder.textView.setText(String.valueOf(imageDTO.getLikeCount()));
+
                                         return ;
                                     }
                                     notifyDataSetChanged();

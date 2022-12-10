@@ -11,12 +11,15 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -133,10 +136,16 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
             public void onSuccess(Uri uri) {
                 Glide.with(context).load(uri).into(holder.usr_icon);
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                holder.usr_icon.setImageResource(R.drawable.profile);
+            }
         });
 
         holder.usr_nickname.setText(imageInfos.get(position).getImageDTO().getUserNickname());
 
+        //아이콘, 닉네임 클릭 시 프로필로
         holder.usr_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,14 +168,35 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
 
         if(imageInfos.get(position).getImageDTO().getLikedPeople().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             holder.likeButton.setImageResource(R.drawable.clickheart);
+            holder.likeButton.setTag(R.drawable.clickheart);
         }
         else {
             holder.likeButton.setImageResource(R.drawable.nonclickheart);
+            holder.likeButton.setTag(R.drawable.nonclickheart);
         }
+        //다이얼로그 call
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BigImageDialog dialog = new BigImageDialog(holder.imageView.getContext(),holder.imageView);
+                dialog.callFunction();
+            }
+        });
+        //좋아요
         holder.textView.setText(String.valueOf(imageInfos.get(position).getImageDTO().getLikeCount()) );
         holder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //사용성 향상
+                if ((int) (holder.likeButton.getTag()) == R.drawable.clickheart){
+                    holder.likeButton.setImageResource(R.drawable.nonclickheart);
+                    holder.textView.setText(String.valueOf(Integer.parseInt(holder.textView.getText().toString())-1));
+                } else{
+                    holder.likeButton.setImageResource(R.drawable.clickheart);
+                    holder.textView.setText(String.valueOf(Integer.parseInt(holder.textView.getText().toString())+1));
+                }
+
+                //메인 코드
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 Map<String,Boolean> like = new HashMap<>();
                 like.put(uid,true);
@@ -186,6 +216,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                                     if (value!=null){
                                         holder.likeButton.setImageResource(R.drawable.nonclickheart);
+                                        holder.likeButton.setTag(R.drawable.nonclickheart);
                                         holder.textView.setText(String.valueOf(imageDTO.getLikeCount()));
                                         return ;
                                     }
@@ -203,6 +234,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                                     if (value!=null){
                                         holder.likeButton.setImageResource(R.drawable.clickheart);
+                                        holder.likeButton.setTag(R.drawable.clickheart);
                                         holder.textView.setText(String.valueOf(imageDTO.getLikeCount()));
                                         return ;
                                     }

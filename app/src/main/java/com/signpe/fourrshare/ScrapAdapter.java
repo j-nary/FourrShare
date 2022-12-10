@@ -11,12 +11,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -122,9 +124,15 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
             public void onSuccess(Uri uri) {
                 Glide.with(context).load(uri).into(holder.usr_icon);
             }
-        });
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                holder.usr_icon.setImageResource(R.drawable.profile);
+            }
+        });;
         Glide.with(context).load(imageInfos.get(position).getImageDTO().getImageUri()).into(holder.imageView);
         holder.likeButton.setImageResource(R.drawable.clickheart);
+        holder.likeButton.setTag(R.drawable.clickheart);
         holder.textView.setText(String.valueOf(imageInfos.get(position).getImageDTO().getLikeCount()) );
         holder.usr_nickname.setText(String.valueOf(imageInfos.get(position).getImageDTO().getUserNickname()));
         holder.usr_icon.setOnClickListener(new View.OnClickListener() {
@@ -146,10 +154,26 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
 
             }
         });
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BigImageDialog dialog = new BigImageDialog(holder.imageView.getContext(),holder.imageView);
+                dialog.callFunction();
+            }
+        });
+
 
         holder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if ((int) (holder.likeButton.getTag()) == R.drawable.clickheart){
+                    holder.likeButton.setImageResource(R.drawable.nonclickheart);
+                    holder.textView.setText(String.valueOf(Integer.parseInt(holder.textView.getText().toString())-1));
+                } else{
+                    holder.likeButton.setImageResource(R.drawable.clickheart);
+                    holder.textView.setText(String.valueOf(Integer.parseInt(holder.textView.getText().toString())+1));
+                }
+
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 Map<String,Boolean> like = new HashMap<>();
                 like.put(uid,true);
@@ -168,6 +192,7 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                                     if (value!=null){
                                         holder.likeButton.setImageResource(R.drawable.nonclickheart);
+                                        holder.likeButton.setTag(R.drawable.nonclickheart);
                                         holder.textView.setText(String.valueOf(imageDTO.getLikeCount()));
                                         return ;
                                     }
@@ -184,6 +209,7 @@ public class ScrapAdapter extends RecyclerView.Adapter<ScrapAdapter.ViewHolder> 
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                                     if (value!=null){
                                         holder.likeButton.setImageResource(R.drawable.clickheart);
+                                        holder.likeButton.setTag(R.drawable.clickheart);
                                         holder.textView.setText(String.valueOf(imageDTO.getLikeCount()));
                                         return ;
                                     }

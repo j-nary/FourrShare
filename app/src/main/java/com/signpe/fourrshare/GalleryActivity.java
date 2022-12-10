@@ -70,6 +70,7 @@ public class GalleryActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
          linearProgressIndicator = findViewById(R.id.linear_prog);
         Intent intent = getIntent();
+
 //        Toast.makeText(this, intent.getStringExtra("urls"), Toast.LENGTH_SHORT).show();
         if (!TextUtils.isEmpty(intent.getStringExtra("urls"))){
             linearProgressIndicator.setVisibility(View.VISIBLE);
