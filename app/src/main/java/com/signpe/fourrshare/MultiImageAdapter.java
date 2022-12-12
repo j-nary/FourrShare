@@ -26,6 +26,8 @@ import com.google.firebase.firestore.Transaction;
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import com.signpe.fourrshare.model.ImageDTO;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder>{
@@ -129,12 +131,15 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
 
                     @Override
                     public void doUpload(int position) {
+                        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         final DocumentReference sfDocRef = firestore.collection("images").document(imageUidList.get(position));
                         firestore.runTransaction(new Transaction.Function<Void>() {
                             @Nullable
                             @Override
                             public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
                                 transaction.update(sfDocRef,"isUpload",true);
+                                transaction.update(sfDocRef, "uploadTimeStamp" , sdf.format(timestamp));
                                 return null;
                             }
                         }).addOnSuccessListener(new OnSuccessListener<Void>() {

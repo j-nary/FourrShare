@@ -7,15 +7,11 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -45,28 +41,24 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
     }
 
     private Context context;
-    private int lastPosition = -1;
-    private boolean order;
     RankInterface rankInterface;
     private String state;
     private FirebaseFirestore firestore;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     public ArrayList<ImageInfo> imageInfos;
-    public ArrayList<ImageDTO> imageDTOs;
     public ArrayList<String> imageUidList = new ArrayList<>();
 
     public RankAdapter(Context context,ArrayList<ImageInfo> imageInfos,boolean order) {
 
         this.context = context;
         this.imageInfos=imageInfos;
-        this.order=order;
 
         if (order){
             state="likeCount";
         }
         else{
-            state="timeStamp";
+            state="uploadTimeStamp";
         }
         firestore = FirebaseFirestore.getInstance();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();

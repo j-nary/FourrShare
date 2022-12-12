@@ -117,6 +117,7 @@ public class GalleryActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         linearProgressIndicator.setProgressCompat(0,true);
         linearProgressIndicator.setVisibility(View.VISIBLE);
+        uriList.clear();
         if(data == null){   // 어떤 이미지도 선택하지 않은 경우
             DynamicToast.makeWarning(GalleryActivity.this,"이미지를 선택하지 않았습니다.").show();
         }
@@ -173,6 +174,7 @@ public class GalleryActivity extends AppCompatActivity {
                             dto.setUserId(currentUser.getEmail());
                             dto.setUserNickname(currentUser.getDisplayName());
                             dto.setTimeStamp(sdf.format(timestamp));
+                            dto.setUploadTimeStamp(sdf.format(timestamp));
                             dto.setLikeCount(0);
                             dto.setIsUpload(false);
                             adapter.imageDTOs.add(dto);
